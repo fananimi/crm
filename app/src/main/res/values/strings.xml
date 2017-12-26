@@ -5,6 +5,7 @@
     <string name="label_today">Today</string>
     <!-- Sync Labels// -->
     <string name="sync_label_customers">Customers</string>
+    <string name="sync_label_product">Catalogues</string>
     <string name="sync_label_calendar">Calendar</string>
     <string name="sync_label_lead_opportunities">Leads/Opportunities</string>
     <string name="sync_label_quotation_sales_orders">Quotations/Sales Orders</string>
@@ -16,6 +17,7 @@
     <string name="day_before_at">The day before at %s</string>
     <string name="minutes_before">%s minutes before</string>
     <string name="custom">Custom...</string>
+    <string name="error_general">An error occurred Please try again later.</string>
     <string name="error_end_date_small_than_start_date">End date cannot be set before start date.</string>
     <string name="label_all">All</string>
     <string name="label_leads">Leads</string>
@@ -54,6 +56,7 @@
     <string name="label_re_schedule">Re-Schedule</string>
     <string name="label_sync_warning">Need to sync before converting to Opportunity</string>
     <string name="label_no_customer_found">No Customers Found</string>
+    <string name="label_no_catalogue_found">No Catalogue Found</string>
     <string name="label_no_location_found">No location found !</string>
     <string name="label_no_contact_found">No contact found !</string>
     <string name="label_no_opportunity_found">No Opportunity Found !</string>
@@ -87,6 +90,7 @@
 
     <string name="label_send_by_email">Send by email</string>
     <string name="label_confirm_sale">Confirm Sale</string>
+    <string name="label_confirm_discard">Are you sure want to discard?</string>
     <string name="label_copy_quotation">Copy of quotation</string>
     <string name="label_no_order_line">You cannot confirm a sales order which has no line</string>
     <string name="label_quotation_confirm">Quotation confirmed !</string>

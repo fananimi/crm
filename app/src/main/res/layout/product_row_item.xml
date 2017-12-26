@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/default_8dp"
+        android:paddingTop="@dimen/default_8dp"
+        android:paddingBottom="@dimen/default_8dp"
+        android:paddingRight="@dimen/default_16dp"
+        android:layout_height="match_parent">
+
+        <odoo.controls.BezelImageView
+            android:id="@+id/image"
+            android:layout_width="40dp"
+            android:layout_margin="@dimen/default_8dp"
+            android:layout_height="40dp"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/default_8dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/name"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/body_text_1"
+                android:fontFamily="@string/font_normal"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Product Name"></TextView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/currency_symbol"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textColor="@color/body_text_3"
+                    android:layout_width="match_parent"
+                    android:lines="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:text="IDR"></TextView>
+                <TextView
+                    android:id="@+id/list_price"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textColor="@color/body_text_3"
+                    android:layout_width="match_parent"
+                    android:lines="1"
+                    android:layout_height="wrap_content"
+                    android:text="10.000"></TextView>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
+

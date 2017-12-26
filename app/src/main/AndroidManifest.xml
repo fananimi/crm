@@ -42,6 +42,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".addons.customers.CustomerDetails" />
+        <activity
+            android:name="com.odoo.addons.product.ProductDetail" />
         <activity android:name=".core.account.ManageAccounts" />
         <activity
             android:name=".OdooActivity"
@@ -177,6 +179,25 @@
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/phonecall_sync_adapter" />
+        </service>
+
+        <provider
+            android:name="com.odoo.addons.product.providers.ProductSyncProvider"
+            android:authorities="${applicationId}.core.provider.content.sync.product.template"
+            android:label="@string/sync_label_product"
+            android:multiprocess="true" />
+
+        <service
+            android:name="com.odoo.addons.product.services.ProductSyncService"
+            android:exported="true"
+            android:process=":sync_product">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/products_sync_adapter" />
         </service>
 
         <activity

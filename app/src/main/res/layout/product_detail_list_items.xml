@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <!--View Layout-->
+    <LinearLayout
+        android:id="@+id/product_view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <odoo.controls.OForm
+            android:id="@+id/productForm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:modelName="product.template">
+
+            <odoo.controls.OField
+                android:id="@id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/default_8dp"
+                app:fieldName="name"
+                app:fieldTextAppearance="?android:textAppearanceLarge"
+                app:showIcon="false"
+                app:showLabel="false"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/list_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="list_price"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:defaultFieldValue="0"
+                app:iconResource="@drawable/ic_action_notes_content"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/standard_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="standard_price"
+                app:defaultFieldValue="0"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/sale_ok"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="sale_ok"
+                app:showLabel="false"
+                app:defaultFieldValue="true"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/purchase_ok"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="purchase_ok"
+                app:showLabel="false"
+                app:defaultFieldValue="true"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="type"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/categ_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="categ_id"
+                app:widgetType="SearchableLive"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/default_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="default_code"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+        </odoo.controls.OForm>
+
+    </LinearLayout>
+
+</LinearLayout>
