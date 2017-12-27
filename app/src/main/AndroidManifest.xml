@@ -41,7 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".addons.contacts.CustomerDetails" />
+        <activity android:name=".addons.contacts.ContactDetails" />
         <activity
             android:name="com.odoo.addons.products.ProductDetail" />
         <activity android:name=".core.account.ManageAccounts" />

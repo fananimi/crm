@@ -312,7 +312,7 @@ public class Contact extends BaseFragment implements
         if (row != null) {
             data = row.getPrimaryBundleData();
         }
-        IntentUtils.startActivity(getActivity(), CustomerDetails.class, data);
+        IntentUtils.startActivity(getActivity(), ContactDetails.class, data);
     }
 
 //    @Override

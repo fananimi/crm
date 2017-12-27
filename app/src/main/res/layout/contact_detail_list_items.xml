@@ -7,17 +7,17 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/product_view_layout"
+        android:id="@+id/customer_view_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <odoo.controls.OForm
-            android:id="@+id/productForm"
+            android:id="@+id/contactForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:modelName="product.template">
+            app:modelName="res.partner">
 
             <odoo.controls.OField
                 android:id="@id/name"
@@ -30,71 +30,92 @@
                 app:showLabel="false"></odoo.controls.OField>
 
             <odoo.controls.OField
-                android:id="@+id/list_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="list_price"
+                app:fieldName="is_company"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:defaultFieldValue="0"
+                app:showLabel="false"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/website"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="website"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_universe"></odoo.controls.OField>
+
+
+            <odoo.controls.OField
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="email"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
+
+            <View
+                style="@style/ViewSeparator"
+                android:layout_marginLeft="72dp" />
+
+            <odoo.controls.OField
+                android:id="@+id/phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="phone"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_phone"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/mobile_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="mobile"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_mobile"></odoo.controls.OField>
+
+            <View
+                style="@style/ViewSeparator"
+                android:layout_marginLeft="72dp" />
+
+            <odoo.controls.OField
+                android:id="@+id/full_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:controlLabel="@string/label_address"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="street"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="state_id"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="country_id"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <View
+                style="@style/ViewSeparator"
+                android:layout_marginLeft="72dp" />
+
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="comment"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
                 app:iconResource="@drawable/ic_action_notes_content"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/standard_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="standard_price"
-                app:defaultFieldValue="0"
-                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/sale_ok"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="sale_ok"
-                app:showLabel="false"
-                app:defaultFieldValue="true"
-                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/purchase_ok"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="purchase_ok"
-                app:showLabel="false"
-                app:defaultFieldValue="true"
-                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="type"
-                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/categ_id"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="categ_id"
-                app:widgetType="SearchableLive"
-                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/default_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="default_code"
-                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
-
         </odoo.controls.OForm>
-
     </LinearLayout>
-
 </LinearLayout>

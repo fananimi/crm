@@ -1,7 +1,6 @@
 package com.odoo.base.addons.product;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.odoo.BuildConfig;
 import com.odoo.base.addons.res.ResCompany;
@@ -19,7 +18,6 @@ import com.odoo.core.orm.fields.types.OInteger;
 import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OText;
 import com.odoo.core.orm.fields.types.OVarchar;
-import com.odoo.core.rpc.helper.ORecordValues;
 import com.odoo.core.support.OUser;
 
 /**
@@ -111,15 +109,6 @@ public class ProductTemplate extends OModel {
             symbol = row.getString("symbol");
         }
         return symbol;
-    }
-
-    public static ORecordValues valuesToData(OValues values) {
-        ORecordValues data = new ORecordValues();
-        for (String key: values.keys()){
-            data.put(key, values.get(key));
-            Log.d(TAG, "ORecordValues : " + key + "=" + values.get(key).toString());
-        }
-        return data;
     }
 
 }

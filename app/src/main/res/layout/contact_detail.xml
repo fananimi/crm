@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:fitsSystemWindows="true"
-    tools:context=".addons.contacts.CustomerDetails">
+    tools:context=".addons.contacts.ContactDetails">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/customer_detail_appbar"
@@ -16,7 +16,7 @@
         android:theme="@style/AppBar.Dark">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/customer_collapsing_toolbar"
+            android:id="@+id/contact_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -26,7 +26,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/user_image"
+                android:id="@+id/contact_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clickable="false"
@@ -61,7 +61,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/customer_detail_list_items" />
+        <include layout="@layout/contact_detail_list_items" />
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton

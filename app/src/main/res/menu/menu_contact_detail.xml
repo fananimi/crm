@@ -2,30 +2,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_customer_edit"
+        android:id="@+id/menu_contact_edit"
         android:icon="@drawable/ic_action_edit"
         android:title="@string/label_edit"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menu_customer_save"
+        android:id="@+id/menu_contact_save"
+        android:icon="@drawable/ic_save_white_24dp"
         android:title="@string/label_save"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menu_customer_cancel"
+        android:id="@+id/menu_contact_cancel"
+        android:icon="@drawable/ic_cancel_white_24dp"
         android:title="@string/label_cancel"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menu_customer_detail_more"
+        android:id="@+id/menu_contact_detail_more"
         android:icon="@drawable/ic_action_more"
         android:title="@string/label_more"
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/menu_customer_share"
-                android:title="@string/label_share" />
+                android:id="@+id/menu_contact_share"
+                android:icon="@drawable/ic_share_white_24dp"
+                android:title="@string/label_share"/>
             <item
-                android:id="@+id/menu_customer_import"
-                android:title="@string/label_import_contact" />
+                android:id="@+id/menu_contact_delete"
+                android:icon="@drawable/ic_delete_white_24dp"
+                android:title="@string/label_delete" />
         </menu>
     </item>
 </menu>

@@ -40,6 +40,7 @@ import com.odoo.core.orm.fields.types.OInteger;
 import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.provider.BaseModelProvider;
 import com.odoo.core.rpc.helper.ODomain;
+import com.odoo.core.rpc.helper.ORecordValues;
 import com.odoo.core.rpc.helper.OdooVersion;
 import com.odoo.core.service.ISyncServiceListener;
 import com.odoo.core.service.OSyncAdapter;
@@ -1191,5 +1192,14 @@ public class OModel implements ISyncServiceListener {
 
     public SyncUtils sync() {
         return SyncUtils.get(mContext);
+    }
+
+    public static ORecordValues valuesToData(OValues values) {
+        ORecordValues data = new ORecordValues();
+        for (String key: values.keys()){
+            data.put(key, values.get(key));
+            Log.d(TAG, "ORecordValues : " + key + "=" + values.get(key).toString());
+        }
+        return data;
     }
 }

@@ -1,4 +1,23 @@
-package com.odoo.addons.products;
+/**
+ * Odoo, Open Source Management Solution
+ * Copyright (C) 2012-today Odoo SA (<http:www.odoo.com>)
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version
+ * <p/>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http:www.gnu.org/licenses/>
+ * <p/>
+ * Created on 14/6/16 6:31 PM
+ */
+package com.odoo.addons.contacts;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,8 +39,8 @@ import android.widget.Toast;
 import com.odoo.App;
 import com.odoo.R;
 import com.odoo.base.addons.ir.feature.OFileManager;
-import com.odoo.base.addons.product.ProductCategory;
-import com.odoo.base.addons.product.ProductTemplate;
+import com.odoo.base.addons.res.ResCountry;
+import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
@@ -49,35 +68,31 @@ import butterknife.ButterKnife;
 import odoo.controls.OField;
 import odoo.controls.OForm;
 
-/**
- * Created by fanani on 12/26/17.
- */
-
-public class ProductDetail extends OdooCompatActivity implements
+public class ContactDetails extends OdooCompatActivity implements
         OField.IOnFieldValueChangeListener,
         View.OnClickListener {
 
     // UI component
-    @BindView(R.id.product_collapsing_toolbar)
+    @BindView(R.id.contact_collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.product_image)
-    ImageView productImage;
+    @BindView(R.id.contact_image)
+    ImageView contactImage;
     @BindView(R.id.captureImage)
     FloatingActionButton mCaptureImage;
 
     // Odoo component
     @BindView(R.id.name)
     OField nameField;
-    @BindView(R.id.productForm)
+    @BindView(R.id.contactForm)
     OForm mForm;
     private ODataRow record;
     private OFileManager mOFileManager;
 
     // DB Component
-    private ProductTemplate productTemplate;
-    private ProductCategory productCategory;
+    private ResPartner resPartner;
+    private ResCountry resCountry;
 
     // Android Component
     private Menu mMenu;
@@ -90,7 +105,7 @@ public class ProductDetail extends OdooCompatActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.product_detail);
+        setContentView(R.layout.contact_detail);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -98,8 +113,8 @@ public class ProductDetail extends OdooCompatActivity implements
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mOFileManager = new OFileManager(this);
-        productTemplate = new ProductTemplate(this, null);
-        productCategory = new ProductCategory(this, null);
+        resPartner = new ResPartner(this, null);
+        resCountry = new ResCountry(this, null);
         extras = getIntent().getExtras();
         record = getRecordInExtra();
         if (record == null){
@@ -112,7 +127,7 @@ public class ProductDetail extends OdooCompatActivity implements
         boolean hasRecord = extras != null && extras.containsKey(OColumn.ROW_ID);
         if (hasRecord){
             int rowId = extras.getInt(OColumn.ROW_ID);
-            ODataRow record = productTemplate.browse(rowId);
+            ODataRow record = resPartner.browse(rowId);
             return record;
         }
         return null;
@@ -126,10 +141,10 @@ public class ProductDetail extends OdooCompatActivity implements
 
         // menu manipulation
         if (mMenu != null) {
-            mMenu.findItem(R.id.menu_product_detail_more).setVisible(!editMode);
-            mMenu.findItem(R.id.menu_product_edit).setVisible(!editMode);
-            mMenu.findItem(R.id.menu_product_save).setVisible(editMode);
-            mMenu.findItem(R.id.menu_product_cancel).setVisible(editMode);
+            mMenu.findItem(R.id.menu_contact_detail_more).setVisible(!editMode);
+            mMenu.findItem(R.id.menu_contact_edit).setVisible(!editMode);
+            mMenu.findItem(R.id.menu_contact_save).setVisible(editMode);
+            mMenu.findItem(R.id.menu_contact_cancel).setVisible(editMode);
         }
 
         // form manipulation
@@ -154,10 +169,10 @@ public class ProductDetail extends OdooCompatActivity implements
 
     private void setImage() {
         if (record != null){
-            productImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            productImage.setImageBitmap(getImage());
+            contactImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            contactImage.setImageBitmap(getImage());
         } else {
-            productImage.setColorFilter(Color.parseColor("#ffffff"));
+            contactImage.setColorFilter(Color.parseColor("#ffffff"));
         }
     }
 
@@ -199,7 +214,7 @@ public class ProductDetail extends OdooCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_product_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_contact_detail, menu);
         mMenu = menu;
         setMode(mEditMode);
         return true;
@@ -212,23 +227,23 @@ public class ProductDetail extends OdooCompatActivity implements
             case android.R.id.home:
                 back();
                 break;
-            case R.id.menu_product_edit:
+            case R.id.menu_contact_edit:
                 mEditMode = !mEditMode;
                 setMode(mEditMode);
                 break;
-            case R.id.menu_product_save:
+            case R.id.menu_contact_save:
                 final OValues values = mForm.getValues();
                 if (values != null){
                     if (inNetwork()) {
-                        ODataRow category = productCategory.browse(values.getInt("categ_id"));
-                        values.put("categ_id", category.getInt("id"));
-                        new ProductSaveOperation().execute(values);
+                        ODataRow country = resCountry.browse(values.getInt("country_id"));
+                        values.put("country_id", country.getInt("id"));
+                        new ContactSaveOperation().execute(values);
                     } else {
                         Toast.makeText(this, R.string.toast_network_required, Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
-            case R.id.menu_product_cancel:
+            case R.id.menu_contact_cancel:
                 mEditMode = !mEditMode;
                 if (record != null){
                     setMode(mEditMode);
@@ -236,10 +251,10 @@ public class ProductDetail extends OdooCompatActivity implements
                     finish();
                 }
                 break;
-            case R.id.menu_product_share:
-                new ProductShareOperation().execute();
+            case R.id.menu_contact_share:
+                new ContactShareOperation().execute();
                 break;
-            case R.id.menu_product_delete:
+            case R.id.menu_contact_delete:
                 if (inNetwork()){
                     OAlert.showConfirm(this, OResource.string(this,
                             R.string.label_confirm_delete),
@@ -247,7 +262,7 @@ public class ProductDetail extends OdooCompatActivity implements
                                 @Override
                                 public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
                                     if (type == OAlert.ConfirmType.POSITIVE) {
-                                        new ProductArchiveOperation().execute();
+                                        new ContactArchiveOperation().execute();
                                     }
                                 }
                             });
@@ -279,7 +294,7 @@ public class ProductDetail extends OdooCompatActivity implements
 
     private void reloadActivity(ODataRow record) {
         Bundle data = record.getPrimaryBundleData();
-        IntentUtils.startActivity(ProductDetail.this, ProductDetail.class, data);
+        IntentUtils.startActivity(ContactDetails.this, ContactDetails.class, data);
         finish();
     }
 
@@ -301,15 +316,15 @@ public class ProductDetail extends OdooCompatActivity implements
         OValues values = mOFileManager.handleResult(requestCode, resultCode, data);
         if (values != null && !values.contains("size_limit_exceed")) {
             mNewImage = values.getString("datas");
-            productImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            productImage.setColorFilter(null);
-            productImage.setImageBitmap(BitmapUtils.getBitmapImage(this, mNewImage));
+            contactImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            contactImage.setColorFilter(null);
+            contactImage.setImageBitmap(BitmapUtils.getBitmapImage(this, mNewImage));
         } else if (values != null) {
             Toast.makeText(this, R.string.toast_image_size_too_large, Toast.LENGTH_LONG).show();
         }
     }
 
-    private class ProductSaveOperation extends AsyncTask<OValues, Void, Boolean> {
+    private class ContactSaveOperation extends AsyncTask<OValues, Void, Boolean> {
 
         private ODataRow results;
         private ProgressDialog mDialog;
@@ -317,7 +332,7 @@ public class ProductDetail extends OdooCompatActivity implements
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mDialog = new ProgressDialog(ProductDetail.this);
+            mDialog = new ProgressDialog(ContactDetails.this);
             mDialog.setTitle(R.string.title_working);
             mDialog.setCancelable(false);
             mDialog.show();
@@ -328,7 +343,7 @@ public class ProductDetail extends OdooCompatActivity implements
             boolean status = false;
             final OValues values = params[0];
             try {
-                final ORecordValues data = ProductTemplate.valuesToData(values);
+                final ORecordValues data = ResPartner.valuesToData(values);
                 if (mNewImage != null){
                     data.put("image", mNewImage);
                 }
@@ -341,12 +356,12 @@ public class ProductDetail extends OdooCompatActivity implements
                         }
                     });
                     Thread.sleep(500);
-                    int newID = productTemplate.getServerDataHelper().createOnServer(data);
+                    int newID = resPartner.getServerDataHelper().createOnServer(data);
                     values.put("id", newID);
-                    results = productTemplate.quickCreateRecord(values.toDataRow());
+                    results = resPartner.quickCreateRecord(values.toDataRow());
                 } else {
-                    productTemplate.getServerDataHelper().updateOnServer(data, record.getInt("id"));
-                    results = productTemplate.quickCreateRecord(record);
+                    resPartner.getServerDataHelper().updateOnServer(data, record.getInt("id"));
+                    results = resPartner.quickCreateRecord(record);
                 }
                 status = true;
             } catch (Exception ex){
@@ -363,24 +378,24 @@ public class ProductDetail extends OdooCompatActivity implements
             if (success) {
                 final String product_name = results.getString("name");
                 final String msg = (record != null) ? product_name + " updated" :  product_name + " created";
-                Toast.makeText(ProductDetail.this, msg, Toast.LENGTH_LONG).show();
+                Toast.makeText(ContactDetails.this, msg, Toast.LENGTH_LONG).show();
                 reloadActivity(results);
             } else {
-                Toast.makeText(ProductDetail.this, R.string.error_general, Toast.LENGTH_LONG).show();
+                Toast.makeText(ContactDetails.this, R.string.error_general, Toast.LENGTH_LONG).show();
             }
         }
 
     }
 
 
-    private class ProductArchiveOperation extends AsyncTask<Void, Void, Boolean> {
+    private class ContactArchiveOperation extends AsyncTask<Void, Void, Boolean> {
 
         private ProgressDialog mDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mDialog = new ProgressDialog(ProductDetail.this);
+            mDialog = new ProgressDialog(ContactDetails.this);
             mDialog.setTitle(R.string.title_working);
             mDialog.setCancelable(false);
             mDialog.show();
@@ -399,10 +414,10 @@ public class ProductDetail extends OdooCompatActivity implements
                 Thread.sleep(500);
                 OArguments args = new OArguments();
                 args.add(new JSONArray().put(record.getInt("id")));
-                productTemplate.getServerDataHelper().callMethod("toggle_active", args);
+                resPartner.getServerDataHelper().callMethod("toggle_active", args);
                 ODomain domain = new ODomain();
                 domain.add("id", "=", record.getInt("id"));
-                productTemplate.quickSyncRecords(domain);
+                resPartner.quickSyncRecords(domain);
                 status = true;
             } catch (Exception ex){
                 ex.printStackTrace();
@@ -418,14 +433,14 @@ public class ProductDetail extends OdooCompatActivity implements
             if (success) {
                 finish();
             } else {
-                Toast.makeText(ProductDetail.this, R.string.error_general, Toast.LENGTH_LONG).show();
+                Toast.makeText(ContactDetails.this, R.string.error_general, Toast.LENGTH_LONG).show();
             }
         }
 
     }
 
 
-    private class ProductShareOperation extends AsyncTask<Void, Void, Boolean> {
+    private class ContactShareOperation extends AsyncTask<Void, Void, Boolean> {
 
         private File imgFile;
         private ProgressDialog mDialog;
@@ -433,7 +448,7 @@ public class ProductDetail extends OdooCompatActivity implements
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mDialog = new ProgressDialog(ProductDetail.this);
+            mDialog = new ProgressDialog(ContactDetails.this);
             mDialog.setTitle(R.string.title_working);
             mDialog.setCancelable(false);
             mDialog.show();
@@ -482,7 +497,7 @@ public class ProductDetail extends OdooCompatActivity implements
                 shareCaptionIntent.putExtra(Intent.EXTRA_TEXT, text);
                 startActivity(Intent.createChooser(shareCaptionIntent, "Share To"));
             } else {
-                Toast.makeText(ProductDetail.this, R.string.error_general, Toast.LENGTH_LONG).show();
+                Toast.makeText(ContactDetails.this, R.string.error_general, Toast.LENGTH_LONG).show();
             }
         }
     }
