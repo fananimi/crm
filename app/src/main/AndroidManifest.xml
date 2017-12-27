@@ -41,7 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".addons.customers.CustomerDetails" />
+        <activity android:name=".addons.contacts.CustomerDetails" />
         <activity
             android:name="com.odoo.addons.products.ProductDetail" />
         <activity android:name=".core.account.ManageAccounts" />
@@ -87,13 +87,13 @@
 
         <!-- Sync Provider & Service  // -->
         <provider
-            android:name=".addons.customers.providers.CustomersSyncProvider"
+            android:name=".addons.contacts.providers.CustomersSyncProvider"
             android:authorities="${applicationId}.provider.content.sync.res_partner"
             android:label="@string/sync_label_customers"
             android:multiprocess="true" />
 
         <service
-            android:name=".addons.customers.services.CustomerSyncService"
+            android:name=".addons.contacts.services.CustomerSyncService"
             android:exported="true"
             android:process=":sync_customer">
             <intent-filter>

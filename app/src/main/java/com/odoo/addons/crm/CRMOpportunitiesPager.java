@@ -45,7 +45,7 @@ import android.widget.Toast;
 import com.odoo.R;
 import com.odoo.addons.crm.models.CRMCaseStage;
 import com.odoo.addons.crm.models.CRMLead;
-import com.odoo.addons.customers.Customers;
+import com.odoo.addons.contacts.Customers;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.support.addons.fragment.BaseFragment;

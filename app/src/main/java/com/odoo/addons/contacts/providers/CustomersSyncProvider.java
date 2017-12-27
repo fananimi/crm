@@ -17,7 +17,7 @@
  * <p>
  * Created on 2/1/15 2:25 PM
  */
-package com.odoo.addons.customers.providers;
+package com.odoo.addons.contacts.providers;
 
 import android.database.Cursor;
 import android.database.MatrixCursor;

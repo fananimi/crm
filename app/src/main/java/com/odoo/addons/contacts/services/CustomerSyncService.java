@@ -17,7 +17,7 @@
  *
  * Created on 2/1/15 11:07 AM
  */
-package com.odoo.addons.customers.services;
+package com.odoo.addons.contacts.services;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -38,14 +38,14 @@ public class CustomerSyncService extends OSyncService {
 
     @Override
     public void performDataSync(OSyncAdapter adapter, Bundle extras, OUser user) {
-        if (adapter.getModel().getModelName().equals("res.partner")) {
-            ODomain domain = new ODomain();
-            domain.add("|");
-            domain.add("|");
-            domain.add("opportunity_ids.user_id", "=", user.getUserId());
-            domain.add("sale_order_ids.user_id", "=", user.getUserId());
-            domain.add("id", "in", adapter.getModel().getServerIds());
-            adapter.setDomain(domain);
-        }
+//        if (adapter.getModel().getModelName().equals("res.partner")) {
+//            ODomain domain = new ODomain();
+//            domain.add("|");
+//            domain.add("|");
+//            domain.add("opportunity_ids.user_id", "=", user.getUserId());
+//            domain.add("sale_order_ids.user_id", "=", user.getUserId());
+//            domain.add("id", "in", adapter.getModel().getServerIds());
+//            adapter.setDomain(domain);
+//        }
     }
 }

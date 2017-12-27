@@ -17,7 +17,7 @@
  * <p/>
  * Created on 14/6/16 6:31 PM
  */
-package com.odoo.addons.customers;
+package com.odoo.addons.contacts;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 import com.odoo.App;
 import com.odoo.R;
-import com.odoo.addons.customers.utils.ShareUtil;
+import com.odoo.addons.contacts.utils.ShareUtil;
 import com.odoo.base.addons.ir.feature.OFileManager;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;

@@ -25,7 +25,7 @@ import com.odoo.R;
 import com.odoo.addons.calendar.EventDetail;
 import com.odoo.addons.crm.models.CRMCaseStage;
 import com.odoo.addons.crm.models.CRMLead;
-import com.odoo.addons.customers.Customers;
+import com.odoo.addons.contacts.Customers;
 import com.odoo.addons.phonecall.PhoneCallDetail;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.base.addons.sale.SaleOrder;
