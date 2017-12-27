@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -32,9 +33,16 @@ import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OResource;
+import com.odoo.core.utils.OStorageUtils;
 import com.odoo.core.utils.OStringColorUtil;
 
 import org.json.JSONArray;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -144,21 +152,25 @@ public class ProductDetail extends OdooCompatActivity implements
 
     private void setImage() {
         if (record != null){
-            Bitmap img;
-            if (!record.getString("image").equals("false")) {
-                img = BitmapUtils.getBitmapImage(this, record.getString("image"));
-            } else if (!record.getString("image_medium").equals("false")) {
-                img = BitmapUtils.getBitmapImage(this, record.getString("image_medium"));
-            } else if (!record.getString("image_small").equals("false")){
-                img = BitmapUtils.getBitmapImage(this, record.getString("image_small"));
-            } else {
-                img = BitmapUtils.getAlphabetImage(this, record.getString("name"));
-            }
             productImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            productImage.setImageBitmap(img);
+            productImage.setImageBitmap(getImage());
         } else {
             productImage.setColorFilter(Color.parseColor("#ffffff"));
         }
+    }
+
+    private Bitmap getImage(){
+        Bitmap img;
+        if (!record.getString("image").equals("false")) {
+            img = BitmapUtils.getBitmapImage(this, record.getString("image"));
+        } else if (!record.getString("image_medium").equals("false")) {
+            img = BitmapUtils.getBitmapImage(this, record.getString("image_medium"));
+        } else if (!record.getString("image_small").equals("false")){
+            img = BitmapUtils.getBitmapImage(this, record.getString("image_small"));
+        } else {
+            img = BitmapUtils.getAlphabetImage(this, record.getString("name"));
+        }
+        return img;
     }
 
     public boolean inNetwork() {
@@ -223,6 +235,7 @@ public class ProductDetail extends OdooCompatActivity implements
                 }
                 break;
             case R.id.menu_product_share:
+                new ProductShareeOperation().execute();
                 break;
             case R.id.menu_product_delete:
                 if (inNetwork()){
@@ -360,7 +373,6 @@ public class ProductDetail extends OdooCompatActivity implements
 
     private class ProductArchiveOperation extends AsyncTask<Void, Void, Boolean> {
 
-        private ODataRow results;
         private ProgressDialog mDialog;
 
         @Override
@@ -408,6 +420,69 @@ public class ProductDetail extends OdooCompatActivity implements
             }
         }
 
+    }
+
+
+    private class ProductShareeOperation extends AsyncTask<Void, Void, Boolean> {
+
+        private File imgFile;
+        private ProgressDialog mDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(ProductDetail.this);
+            mDialog.setTitle(R.string.title_working);
+            mDialog.setCancelable(false);
+            mDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            boolean status ;
+            try {
+                OutputStream imgOut = null;
+                imgFile = new File(OStorageUtils.getDirectoryPath("image"), record.getString("name") + ".jpg");
+                imgOut = new FileOutputStream(imgFile);
+                Bitmap bmp = getImage();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, imgOut);
+                imgOut.flush();
+                imgOut.close();
+                status = true;
+            } catch (FileNotFoundException e){
+                status = false;
+            } catch (IOException e){
+                status = false;
+            }
+
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+            mDialog.dismiss();
+            if (success) {
+                Intent shareCaptionIntent = new Intent();
+                shareCaptionIntent.setAction(Intent.ACTION_SEND);
+                shareCaptionIntent.setType("image/*");
+                shareCaptionIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(imgFile));
+                //set caption
+                String text = "*"
+                        + record.getString("name")
+                        + "*"
+                        + "\n"
+                        + record.getString("currency_symbol")
+                        + " "
+                        + record.getString("lst_price");
+                // shareCaptionIntent.putExtra(Intent.EXTRA_TITLE, record.getString("name"));
+                // shareCaptionIntent.putExtra(Intent.EXTRA_SUBJECT, record.getString("name"));
+                shareCaptionIntent.putExtra(Intent.EXTRA_TEXT, text);
+                startActivity(Intent.createChooser(shareCaptionIntent, "Share To"));
+            } else {
+                Toast.makeText(ProductDetail.this, R.string.error_general, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
 }
