@@ -52,12 +52,12 @@ public class Products extends BaseFragment implements
         View.OnClickListener,
         AdapterView.OnItemClickListener {
 
-    public static final String KEY = Products.class.getSimpleName();
+    public static final String TAG = Products.class.getSimpleName();
     public static final String EXTRA_KEY_TYPE = "extra_key_type";
 
     // UI component
     @BindView(R.id.listview)
-    ListView mProductsList;
+    ListView mList;
 
     // Odoo component
     private OCursorListAdapter mAdapter = null;
@@ -81,25 +81,25 @@ public class Products extends BaseFragment implements
         View view = inflater.inflate(R.layout.common_listview, container, false);
         ButterKnife.bind(this, view);
         setHasOptionsMenu(true);
-        setHasSyncStatusObserver(KEY, this, db());
+        setHasSyncStatusObserver(TAG, this, db());
+        setHasFloatingButton(view, R.id.fabButton, mList, this);
+        setHasSwipeRefreshView(view, R.id.swipe_container, this);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
 
         // bind adapter
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.product_row_item);
         mAdapter.setOnViewBindListener(this);
         mAdapter.setHasSectionIndexers(true, "name");
-        mProductsList.setAdapter(mAdapter);
-        mProductsList.setFastScrollAlwaysVisible(true);
-        mProductsList.setOnItemClickListener(this);
+        mList.setAdapter(mAdapter);
+        mList.setFastScrollAlwaysVisible(true);
+        mList.setOnItemClickListener(this);
 
-        setHasFloatingButton(view, R.id.fabButton, mProductsList, this);
         getLoaderManager().initLoader(0, null, this);
 
         extras = getArguments();
@@ -110,6 +110,14 @@ public class Products extends BaseFragment implements
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
+        Bitmap bmp = getImage(row);
+        OControls.setImage(view, R.id.image, bmp);
+        OControls.setText(view, R.id.name, row.getString("name"));
+        OControls.setText(view, R.id.currency_symbol, row.getString("currency_symbol"));
+        OControls.setText(view, R.id.list_price, row.getString("list_price"));
+    }
+
+    private Bitmap getImage(ODataRow row){
         Bitmap img;
         if (!row.getString("image").equals("false")) {
             img = BitmapUtils.getBitmapImage(getActivity(), row.getString("image"));
@@ -120,10 +128,7 @@ public class Products extends BaseFragment implements
         } else {
             img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("name"));
         }
-        OControls.setImage(view, R.id.image, img);
-        OControls.setText(view, R.id.name, row.getString("name"));
-        OControls.setText(view, R.id.currency_symbol, row.getString("currency_symbol"));
-        OControls.setText(view, R.id.list_price, row.getString("list_price"));
+        return img;
     }
 
     @Override
@@ -133,22 +138,22 @@ public class Products extends BaseFragment implements
 
         if (!TextUtils.isEmpty(mCurFilter)) {
             where = "(name like ?)";
-            args.addAll(Arrays.asList(new String[]{"%" + mCurFilter + "%"}));
+            args.addAll(Arrays.asList("%" + mCurFilter + "%"));
         }
 
         if (mType!=null){
             switch (mType) {
                 case Product:
                     where += " AND (type = ?)";
-                    args.addAll(Arrays.asList(new String[]{"product"}));
+                    args.addAll(Arrays.asList("product"));
                     break;
                 case Consumable:
                     where += " AND (type = ?)";
-                    args.addAll(Arrays.asList(new String[]{"consu"}));
+                    args.addAll(Arrays.asList("consu"));
                     break;
                 case Service:
                     where += " AND type = ?";
-                    args.addAll(Arrays.asList(new String[]{"service"}));
+                    args.addAll(Arrays.asList("service"));
                     break;
             }
         }
@@ -203,7 +208,7 @@ public class Products extends BaseFragment implements
     @Override
     public List<ODrawerItem> drawerMenus(Context context) {
         List<ODrawerItem> items = new ArrayList<>();
-        items.add(new ODrawerItem(KEY).setTitle("Catalogues")
+        items.add(new ODrawerItem(TAG).setTitle("Catalogues")
                 .setIcon(R.drawable.ic_shopping_basket_white_24dp)
                 .setInstance(new Products()));
         return items;

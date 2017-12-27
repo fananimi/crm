@@ -21,17 +21,17 @@ package com.odoo.addons.sale.providers;
 
 import android.net.Uri;
 
-import com.odoo.addons.sale.models.SaleOrder;
+import com.odoo.base.addons.sale.SaleOrder;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.provider.BaseModelProvider;
 
 public class SaleOrderProvider extends BaseModelProvider {
     public static final String TAG = SaleOrderProvider.class.getSimpleName();
 
-    @Override
-    public OModel getModel(Uri uri) {
-        return new SaleOrder(getContext(), getUser(uri));
-    }
+//    @Override
+//    public OModel getModel(Uri uri) {
+//        return new SaleOrder(getContext(), getUser(uri));
+//    }
 
     @Override
     public String authority() {

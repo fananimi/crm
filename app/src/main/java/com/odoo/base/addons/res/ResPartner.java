@@ -23,7 +23,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import com.odoo.addons.sale.models.AccountPaymentTerm;
 import com.odoo.BuildConfig;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
@@ -72,7 +71,7 @@ public class ResPartner extends OModel {
     OColumn partner_shipping_id = new OColumn("partner_shipping_id", OVarchar.class).setLocalColumn();
     OColumn pricelist_id = new OColumn("pricelist_id", OVarchar.class).setLocalColumn();
     OColumn fiscal_position = new OColumn("fiscal_position", OVarchar.class).setLocalColumn();
-    OColumn payment_term = new OColumn("Payment Term", AccountPaymentTerm.class, OColumn.RelationType.ManyToOne).setLocalColumn();
+//    OColumn payment_term = new OColumn("Payment Term", AccountPaymentTerm.class, OColumn.RelationType.ManyToOne).setLocalColumn();
 
     public ResPartner(Context context, OUser user) {
         super(context, "res.partner", user);

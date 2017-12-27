@@ -23,8 +23,7 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
 
-import com.odoo.addons.sale.models.AccountPaymentTerm;
-import com.odoo.addons.sale.models.SaleOrder;
+import com.odoo.base.addons.sale.SaleOrder;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.service.ISyncFinishListener;
@@ -35,9 +34,10 @@ import com.odoo.core.support.OUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaleOrderSyncService extends OSyncService implements ISyncFinishListener {
+public class SaleOrderSyncService extends OSyncService  {
+
     public static final String TAG = SaleOrderSyncService.class.getSimpleName();
-    public Boolean firstSync = false;
+//    public Boolean firstSync = false;
 
     @Override
     public OSyncAdapter getSyncAdapter(OSyncService service, Context context) {
@@ -46,36 +46,36 @@ public class SaleOrderSyncService extends OSyncService implements ISyncFinishLis
 
     @Override
     public void performDataSync(OSyncAdapter adapter, Bundle extras, OUser user) {
-        if (adapter.getModel().getModelName().equals("sale.order")) {
-            ODomain domain = new ODomain();
-            SaleOrder saleOrder = new SaleOrder(getApplicationContext(), user);
-            List<Integer> newIds = new ArrayList<>();
-            for (ODataRow row : saleOrder.select(new String[]{}, "name = ? and id != ?", new String[]{"/", "0"})) {
-                newIds.add(row.getInt("id"));
-            }
-            if (newIds.size() > 0) {
-                domain.add("id", "in", newIds);
-            }
-            if (!firstSync)
-                adapter.onSyncFinish(this);
-            domain.add("user_id", "=", user.getUserId());
-            adapter.setDomain(domain).syncDataLimit(50);
-        }
-        if (adapter.getModel().getModelName().equals("account.payment.term")) {
-            adapter.onSyncFinish(syncFinishListener);
-        }
+//        if (adapter.getModel().getModelName().equals("sale.order")) {
+//            ODomain domain = new ODomain();
+//            SaleOrder saleOrder = new SaleOrder(getApplicationContext(), user);
+//            List<Integer> newIds = new ArrayList<>();
+//            for (ODataRow row : saleOrder.select(new String[]{}, "name = ? and id != ?", new String[]{"/", "0"})) {
+//                newIds.add(row.getInt("id"));
+//            }
+//            if (newIds.size() > 0) {
+//                domain.add("id", "in", newIds);
+//            }
+//            if (!firstSync)
+//                adapter.onSyncFinish(this);
+//            domain.add("user_id", "=", user.getUserId());
+//            adapter.setDomain(domain).syncDataLimit(50);
+//        }
+//        if (adapter.getModel().getModelName().equals("account.payment.term")) {
+//            adapter.onSyncFinish(syncFinishListener);
+//        }
     }
 
-    @Override
-    public OSyncAdapter performNextSync(OUser user, SyncResult syncResult) {
-        return new OSyncAdapter(getApplicationContext(), AccountPaymentTerm.class, SaleOrderSyncService.this, true);
-    }
+//    @Override
+//    public OSyncAdapter performNextSync(OUser user, SyncResult syncResult) {
+//        return new OSyncAdapter(getApplicationContext(), AccountPaymentTerm.class, SaleOrderSyncService.this, true);
+//    }
 
-    ISyncFinishListener syncFinishListener = new ISyncFinishListener() {
-        @Override
-        public OSyncAdapter performNextSync(OUser user, SyncResult syncResult) {
-            firstSync = true;
-            return new OSyncAdapter(getApplicationContext(), SaleOrder.class, SaleOrderSyncService.this, true);
-        }
-    };
+//    ISyncFinishListener syncFinishListener = new ISyncFinishListener() {
+//        @Override
+//        public OSyncAdapter performNextSync(OUser user, SyncResult syncResult) {
+//            firstSync = true;
+//            return new OSyncAdapter(getApplicationContext(), SaleOrder.class, SaleOrderSyncService.this, true);
+//        }
+//    };
 }
