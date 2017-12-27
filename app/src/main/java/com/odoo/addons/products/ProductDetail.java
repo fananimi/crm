@@ -1,4 +1,4 @@
-package com.odoo.addons.product;
+package com.odoo.addons.products;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

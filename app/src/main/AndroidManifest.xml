@@ -43,7 +43,7 @@
         </activity>
         <activity android:name=".addons.customers.CustomerDetails" />
         <activity
-            android:name="com.odoo.addons.product.ProductDetail" />
+            android:name="com.odoo.addons.products.ProductDetail" />
         <activity android:name=".core.account.ManageAccounts" />
         <activity
             android:name=".OdooActivity"
@@ -182,13 +182,13 @@
         </service>
 
         <provider
-            android:name="com.odoo.addons.product.providers.ProductSyncProvider"
+            android:name="com.odoo.addons.products.providers.ProductSyncProvider"
             android:authorities="${applicationId}.core.provider.content.sync.product.template"
             android:label="@string/sync_label_product"
             android:multiprocess="true" />
 
         <service
-            android:name="com.odoo.addons.product.services.ProductSyncService"
+            android:name="com.odoo.addons.products.services.ProductSyncService"
             android:exported="true"
             android:process=":sync_product">
             <intent-filter>

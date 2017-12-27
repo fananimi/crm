@@ -1,4 +1,4 @@
-package com.odoo.addons.product.services;
+package com.odoo.addons.products.services;
 
 import android.content.Context;
 import android.os.Bundle;

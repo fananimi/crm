@@ -1,4 +1,4 @@
-package com.odoo.addons.product.providers;
+package com.odoo.addons.products.providers;
 
 import com.odoo.base.addons.product.ProductTemplate;
 import com.odoo.core.orm.provider.BaseModelProvider;
