@@ -310,11 +310,7 @@ public class ProductDetail extends OdooCompatActivity implements
                     Thread.sleep(500);
                     int newID = productTemplate.getServerDataHelper().createOnServer(data);
                     values.put("id", newID);
-                    productTemplate.quickCreateRecord(values.toDataRow());
-                    // Search a created record
-                    String selection = "(id) = ?";
-                    String [] selectionArgs = {Integer.toString(newID)};
-                    results = productTemplate.browse(null, selection, selectionArgs);
+                    results = productTemplate.quickCreateRecord(values.toDataRow());
                 } else {
                     productTemplate.getServerDataHelper().updateOnServer(data, record.getInt("id"));
                     results = productTemplate.quickCreateRecord(record);
