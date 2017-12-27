@@ -91,6 +91,7 @@
     <string name="label_send_by_email">Send by email</string>
     <string name="label_confirm_sale">Confirm Sale</string>
     <string name="label_confirm_discard">Are you sure want to discard?</string>
+    <string name="label_confirm_delete">Are you sure want to delete?</string>
     <string name="label_copy_quotation">Copy of quotation</string>
     <string name="label_no_order_line">You cannot confirm a sales order which has no line</string>
     <string name="label_quotation_confirm">Quotation confirmed !</string>

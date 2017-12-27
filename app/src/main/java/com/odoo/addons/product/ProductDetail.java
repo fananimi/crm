@@ -24,6 +24,8 @@ import com.odoo.base.addons.product.ProductTemplate;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.rpc.helper.OArguments;
+import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.rpc.helper.ORecordValues;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.utils.BitmapUtils;
@@ -31,6 +33,8 @@ import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.OStringColorUtil;
+
+import org.json.JSONArray;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -221,6 +225,20 @@ public class ProductDetail extends OdooCompatActivity implements
             case R.id.menu_product_share:
                 break;
             case R.id.menu_product_delete:
+                if (inNetwork()){
+                    OAlert.showConfirm(this, OResource.string(this,
+                            R.string.label_confirm_delete),
+                            new OAlert.OnAlertConfirmListener() {
+                                @Override
+                                public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
+                                    if (type == OAlert.ConfirmType.POSITIVE) {
+                                        new ProductArchiveOperation().execute();
+                                    }
+                                }
+                            });
+                } else {
+                    Toast.makeText(this, R.string.toast_network_required, Toast.LENGTH_LONG).show();
+                }
                 break;
             default:
                 break;
@@ -332,6 +350,59 @@ public class ProductDetail extends OdooCompatActivity implements
                 final String msg = (record != null) ? product_name + " updated" :  product_name + " created";
                 Toast.makeText(ProductDetail.this, msg, Toast.LENGTH_LONG).show();
                 reloadActivity(results);
+            } else {
+                Toast.makeText(ProductDetail.this, R.string.error_general, Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
+
+    private class ProductArchiveOperation extends AsyncTask<Void, Void, Boolean> {
+
+        private ODataRow results;
+        private ProgressDialog mDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(ProductDetail.this);
+            mDialog.setTitle(R.string.title_working);
+            mDialog.setCancelable(false);
+            mDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            boolean status ;
+            try {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDialog.setMessage("Archiving " + record.getString("name"));
+                    }
+                });
+                Thread.sleep(500);
+                OArguments args = new OArguments();
+                args.add(new JSONArray().put(record.getInt("id")));
+                productTemplate.getServerDataHelper().callMethod("toggle_active", args);
+                ODomain domain = new ODomain();
+                domain.add("id", "=", record.getInt("id"));
+                productTemplate.quickSyncRecords(domain);
+                status = true;
+            } catch (Exception ex){
+                ex.printStackTrace();
+                status = false;
+            }
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+            mDialog.dismiss();
+            if (success) {
+                finish();
             } else {
                 Toast.makeText(ProductDetail.this, R.string.error_general, Toast.LENGTH_LONG).show();
             }
