@@ -21,6 +21,7 @@ package com.odoo.base.addons.res;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -35,6 +36,7 @@ import com.odoo.core.orm.fields.types.OBoolean;
 import com.odoo.core.orm.fields.types.OText;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.support.OUser;
+import com.odoo.core.utils.BitmapUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +148,20 @@ public class ResPartner extends OModel {
             contact = row.getString("mobile");
         }
         return contact;
+    }
+
+    public static Bitmap getImage(Context context, ODataRow record){
+        Bitmap img;
+        if (!record.getString("image").equals("false")) {
+            img = BitmapUtils.getBitmapImage(context, record.getString("image"));
+        } else if (!record.getString("image_medium").equals("false")) {
+            img = BitmapUtils.getBitmapImage(context, record.getString("image_medium"));
+        } else if (!record.getString("image_small").equals("false")){
+            img = BitmapUtils.getBitmapImage(context, record.getString("image_small"));
+        } else {
+            img = null;
+        }
+        return img;
     }
 
     public Uri liveSearchURI() {

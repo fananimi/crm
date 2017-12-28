@@ -30,6 +30,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +60,7 @@ import com.odoo.core.utils.OStringColorUtil;
 
 import org.json.JSONArray;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -199,24 +201,15 @@ public class ContactDetails extends OdooCompatActivity implements
     private void setImage() {
         if (record != null){
             contactImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            contactImage.setImageBitmap(getImage());
+            Bitmap image = ResPartner.getImage(this, record);
+            if (image != null){
+                contactImage.setImageBitmap(image);
+            } else {
+                BitmapUtils.getAlphabetImage(this, record.getString("name"));
+            }
         } else {
             contactImage.setColorFilter(Color.parseColor("#ffffff"));
         }
-    }
-
-    private Bitmap getImage(){
-        Bitmap img;
-        if (!record.getString("image").equals("false")) {
-            img = BitmapUtils.getBitmapImage(this, record.getString("image"));
-        } else if (!record.getString("image_medium").equals("false")) {
-            img = BitmapUtils.getBitmapImage(this, record.getString("image_medium"));
-        } else if (!record.getString("image_small").equals("false")){
-            img = BitmapUtils.getBitmapImage(this, record.getString("image_small"));
-        } else {
-            img = BitmapUtils.getAlphabetImage(this, record.getString("name"));
-        }
-        return img;
     }
 
     public boolean inNetwork() {
@@ -554,7 +547,7 @@ public class ContactDetails extends OdooCompatActivity implements
                 }
                 vAddr += ";";
                 if (!TextUtils.equals(record.getString("state_id"), "false")){
-                    vAddr += record.getM2ORecord("state_id").browse().getString("code");
+                    vAddr += record.getM2ORecord("state_id").browse().getString("name");
                 }
                 vAddr += ";";
                 if (!TextUtils.equals(record.getString("zip"), "false")){
@@ -562,12 +555,21 @@ public class ContactDetails extends OdooCompatActivity implements
                 }
                 vAddr += ";";
                 if (!TextUtils.equals(record.getString("country_id"), "false")){
-                    vAddr += record.getM2ORecord("country_id").browse().getString("code");
+                    vAddr += record.getM2ORecord("country_id").browse().getString("name");
                 }
                 vAddr += "\r\n";
                 fw.write(vAddr);
                 if (!TextUtils.equals(record.getString("website"), "false")){
                     fw.write("URL:" + record.getString("website") + "\r\n");
+                }
+
+                Bitmap image = ResPartner.getImage(ContactDetails.this, record);
+                if (image != null){
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.JPEG, 100, output);
+                    byte[] byteArrayImage = output.toByteArray();
+                    String base64Image = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                    fw.write("PHOTO;TYPE=JPEG;ENCODING=b:" + base64Image);
                 }
 
                 fw.write("END:VCARD\n");
