@@ -29,7 +29,7 @@ import com.odoo.core.support.OUser;
 
 public class ResCurrency extends OModel {
     public static final String TAG = ResCurrency.class.getSimpleName();
-    OColumn name = new OColumn("Name", OVarchar.class);
+    OColumn name = new OColumn("Name", OVarchar.class).setSize(10);
     OColumn symbol = new OColumn("Symbol", OVarchar.class).setSize(10);
 
     public ResCurrency(Context context, OUser user) {

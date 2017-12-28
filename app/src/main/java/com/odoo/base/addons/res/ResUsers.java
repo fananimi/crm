@@ -29,7 +29,9 @@ import com.odoo.core.support.OUser;
 public class ResUsers extends OModel {
     public static final String TAG = ResUsers.class.getSimpleName();
 
-    OColumn name = new OColumn("Name", OVarchar.class);
+    OColumn name = new OColumn("Name", OVarchar.class)
+            .setSize(100)
+            .setRequired();
     OColumn login = new OColumn("User Login name", OVarchar.class);
 
     @Override

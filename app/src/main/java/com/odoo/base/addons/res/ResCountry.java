@@ -28,7 +28,10 @@ import com.odoo.core.support.OUser;
 
 public class ResCountry extends OModel {
 
-    OColumn name = new OColumn("Name", OVarchar.class).setSize(100);
+    OColumn name = new OColumn("Name", OVarchar.class)
+            .setSize(100)
+            .setRequired();
+    OColumn code = new OColumn("Code", OVarchar.class).setSize(10);
 
     public ResCountry(Context context, OUser user) {
         super(context, "res.country", user);

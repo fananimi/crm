@@ -9,8 +9,8 @@ import com.odoo.core.support.OUser;
 
 public class ResCountryState extends OModel {
 
-    OColumn name = new OColumn("Name", OVarchar.class);
-    OColumn code = new OColumn("Code", OVarchar.class);
+    OColumn name = new OColumn("Name", OVarchar.class).setSize(100);
+    OColumn code = new OColumn("Code", OVarchar.class).setSize(10);
     OColumn country_id = new OColumn("Country", ResCountry.class, OColumn.RelationType.ManyToOne);
 
     public ResCountryState(Context context, OUser user) {

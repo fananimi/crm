@@ -30,7 +30,9 @@ import com.odoo.core.support.OUser;
 public class ResCompany extends OModel {
     public static final String TAG = ResCompany.class.getSimpleName();
 
-    OColumn name = new OColumn("Name", OVarchar.class);
+    OColumn name = new OColumn("Name", OVarchar.class)
+            .setSize(100)
+            .setRequired();
     OColumn currency_id = new OColumn("Currency", ResCurrency.class,
             OColumn.RelationType.ManyToOne);
 
