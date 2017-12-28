@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.volley.NetworkError;
 import com.odoo.App;
 import com.odoo.BuildConfig;
 import com.odoo.base.addons.ir.IrModel;
@@ -1084,8 +1085,12 @@ public class OModel implements ISyncServiceListener {
         return data;
     }
 
-    public ServerDataHelper getServerDataHelper() {
-        return new ServerDataHelper(mContext, this, getUser());
+    public ServerDataHelper getServerDataHelper() throws NetworkError {
+        try {
+            return new ServerDataHelper(mContext, this, getUser());
+        } catch (NullPointerException ex){
+            throw new NetworkError();
+        }
     }
 
     public String getName(int row_id) {

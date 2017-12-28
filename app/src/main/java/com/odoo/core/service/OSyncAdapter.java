@@ -27,6 +27,7 @@ import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.volley.NetworkError;
 import com.odoo.App;
 import com.odoo.R;
 import com.odoo.base.addons.ir.IrModel;
@@ -332,7 +333,7 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
      *
      * @param model model object
      */
-    private void createRecordsOnServer(OModel model) {
+    private void createRecordsOnServer(OModel model) throws NetworkError {
         List<ODataRow> records = model.select(null,
                 "(id = ? or id = ?)", new String[]{"0", "false"});
         int counter = 0;
@@ -370,7 +371,7 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
      * @param row
      * @return updatedRow
      */
-    public boolean validateRelationRecords(OModel model, ODataRow row) {
+    public boolean validateRelationRecords(OModel model, ODataRow row) throws NetworkError {
         Log.d(TAG, "Validating relation records for record");
         // Check for relation local record
         for (OColumn column : model.getRelationColumns()) {
