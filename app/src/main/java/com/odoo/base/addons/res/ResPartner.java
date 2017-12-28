@@ -22,6 +22,7 @@ package com.odoo.base.addons.res;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.odoo.BuildConfig;
 import com.odoo.core.orm.ODataRow;
@@ -44,11 +45,19 @@ public class ResPartner extends OModel {
 
     OColumn name = new OColumn("Name", OVarchar.class).setSize(100).setRequired();
     OColumn is_company = new OColumn("Is Company", OBoolean.class).setDefaultValue(false);
-    OColumn image_small = new OColumn("Avatar", OBlob.class).setDefaultValue(false);
+    OColumn image = new OColumn("Image", OBlob.class).setDefaultValue(false);
+    OColumn image_small = new OColumn("Image", OBlob.class).setDefaultValue(false);
+    OColumn image_medium = new OColumn("Image", OBlob.class).setDefaultValue(false);
+    OColumn country_id = new OColumn("Country", ResCountry.class, OColumn.RelationType.ManyToOne);
+    @Odoo.Domain("[['country_id', '=', @country_id]]")
+    OColumn state_id = new OColumn("State", ResCountryState.class, OColumn.RelationType.ManyToOne);
+    OColumn city = new OColumn("City", OVarchar.class);
     OColumn street = new OColumn("Street", OVarchar.class).setSize(100);
     OColumn street2 = new OColumn("Street2", OVarchar.class).setSize(100);
-    OColumn city = new OColumn("City", OVarchar.class);
     OColumn zip = new OColumn("Zip", OVarchar.class);
+    @Odoo.Functional(store = true, depends = {"country_id", "state_id", "city", "street", "street2", "zip"}, method = "storeFullAddress")
+    OColumn full_address = new OColumn("Address", OVarchar.class).setSize(200)
+            .setLocalColumn();
     OColumn website = new OColumn("Website", OVarchar.class).setSize(100);
     OColumn phone = new OColumn("Phone", OVarchar.class).setSize(15);
     OColumn mobile = new OColumn("Mobile", OVarchar.class).setSize(15);
@@ -56,17 +65,14 @@ public class ResPartner extends OModel {
     OColumn company_id = new OColumn("Company", ResCompany.class, OColumn.RelationType.ManyToOne);
     OColumn parent_id = new OColumn("Related Company", ResPartner.class, OColumn.RelationType.ManyToOne)
             .addDomain("is_company", "=", true);
-
-    @Odoo.Domain("[['country_id', '=', @country_id]]")
-    OColumn state_id = new OColumn("State", ResCountryState.class, OColumn.RelationType.ManyToOne);
-    OColumn country_id = new OColumn("Country", ResCountry.class, OColumn.RelationType.ManyToOne);
     OColumn customer = new OColumn("Customer", OBoolean.class).setDefaultValue("true");
+    OColumn supplier = new OColumn("Supplier", OBoolean.class).setDefaultValue("false");
+//    OColumn category_id = new OColumn("Tags", ResPartnerCategory.class,
+//            OColumn.RelationType.ManyToMany);
     OColumn comment = new OColumn("Internal Note", OText.class);
     @Odoo.Functional(store = true, depends = {"parent_id"}, method = "storeCompanyName")
     OColumn company_name = new OColumn("Company Name", OVarchar.class).setSize(100)
             .setLocalColumn();
-    OColumn large_image = new OColumn("Image", OBlob.class).setDefaultValue("false").setLocalColumn();
-
     OColumn partner_invoice_id = new OColumn("partner_invoice_id", OVarchar.class).setLocalColumn();
     OColumn partner_shipping_id = new OColumn("partner_shipping_id", OVarchar.class).setLocalColumn();
     OColumn pricelist_id = new OColumn("pricelist_id", OVarchar.class).setLocalColumn();
@@ -95,6 +101,42 @@ public class ResPartner extends OModel {
         return "";
     }
 
+    public String storeFullAddress(OValues value){
+        String full_address = "";
+        try {
+            if (!TextUtils.equals(value.getString("street"), "false")){
+                full_address += value.getString("street");
+                full_address += "\n";
+            }
+            if (!TextUtils.equals(value.getString("street2"), "false")){
+                full_address += value.getString("street2");
+                full_address += "\n";
+            }
+            if (!TextUtils.equals(value.getString("city"), "false")){
+                full_address += value.getString("city");
+            }
+            if (!TextUtils.equals(value.getString("zip"), "false")){
+                if (!TextUtils.equals(value.getString("city"), "false")){
+                    full_address += ", ";
+                }
+                full_address += value.getString("zip");
+            }
+            if (!TextUtils.equals(value.getString("city"), "false") || !TextUtils.equals(value.getString("zip"), "false")){
+                full_address += "\n";
+            }
+            if (!TextUtils.equals(value.getString("state_id"), "false")){
+                full_address += (String) ((ArrayList<Object>) value.get("state_id")).get(1);
+                full_address += "\n";
+            }
+            if (!TextUtils.equals(value.getString("country_id"), "false")){
+                full_address += (String) ((ArrayList<Object>) value.get("country_id")).get(1);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return full_address;
+    }
+
     public static String getContact(Context context, int row_id) {
         ODataRow row = new ResPartner(context, null).browse(row_id);
         String contact;
@@ -104,19 +146,6 @@ public class ResPartner extends OModel {
             contact = row.getString("mobile");
         }
         return contact;
-    }
-
-    public String getAddress(ODataRow row) {
-        String add = "";
-        if (!row.getString("street").equals("false"))
-            add += row.getString("street") + ", ";
-        if (!row.getString("street2").equals("false"))
-            add += "\n" + row.getString("street2") + ", ";
-        if (!row.getString("city").equals("false"))
-            add += row.getString("city");
-        if (!row.getString("zip").equals("false"))
-            add += " - " + row.getString("zip") + " ";
-        return add;
     }
 
     public Uri liveSearchURI() {

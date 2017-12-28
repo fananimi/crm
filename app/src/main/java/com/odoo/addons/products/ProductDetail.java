@@ -220,8 +220,10 @@ public class ProductDetail extends OdooCompatActivity implements
                 final OValues values = mForm.getValues();
                 if (values != null){
                     if (inNetwork()) {
-                        ODataRow category = productCategory.browse(values.getInt("categ_id"));
-                        values.put("categ_id", category.getInt("id"));
+                        if (!TextUtils.equals(values.getString("categ_id"), "false")){
+                            ODataRow category = productCategory.browse(values.getInt("categ_id"));
+                            values.put("categ_id", category.getInt("id"));
+                        }
                         new ProductSaveOperation().execute(values);
                     } else {
                         Toast.makeText(this, R.string.toast_network_required, Toast.LENGTH_LONG).show();

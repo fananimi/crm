@@ -30,6 +30,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +41,7 @@ import com.odoo.App;
 import com.odoo.R;
 import com.odoo.base.addons.ir.feature.OFileManager;
 import com.odoo.base.addons.res.ResCountry;
+import com.odoo.base.addons.res.ResCountryState;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OValues;
@@ -93,6 +95,7 @@ public class ContactDetails extends OdooCompatActivity implements
     // DB Component
     private ResPartner resPartner;
     private ResCountry resCountry;
+    private ResCountryState resCountryState;
 
     // Android Component
     private Menu mMenu;
@@ -115,6 +118,7 @@ public class ContactDetails extends OdooCompatActivity implements
         mOFileManager = new OFileManager(this);
         resPartner = new ResPartner(this, null);
         resCountry = new ResCountry(this, null);
+        resCountryState = new ResCountryState(this, null);
         extras = getIntent().getExtras();
         record = getRecordInExtra();
         if (record == null){
@@ -151,8 +155,21 @@ public class ContactDetails extends OdooCompatActivity implements
         if (editMode) {
             nameField.setVisibility(View.VISIBLE);
             nameField.setOnValueChangeListener(this);
+            findViewById(R.id.country_id).setVisibility(View.VISIBLE);
+            findViewById(R.id.state_id).setVisibility(View.VISIBLE);
+            findViewById(R.id.city).setVisibility(View.VISIBLE);
+            findViewById(R.id.street).setVisibility(View.VISIBLE);
+            findViewById(R.id.street2).setVisibility(View.VISIBLE);
+            findViewById(R.id.full_address).setVisibility(View.GONE);
         } else {
             nameField.setVisibility(View.GONE);
+            findViewById(R.id.country_id).setVisibility(View.GONE);
+            findViewById(R.id.state_id).setVisibility(View.GONE);
+            findViewById(R.id.city).setVisibility(View.GONE);
+            findViewById(R.id.street).setVisibility(View.GONE);
+            findViewById(R.id.street2).setVisibility(View.GONE);
+            findViewById(R.id.full_address).setVisibility(View.VISIBLE);
+            checkControls();
         }
         mForm.setEditable(mEditMode);
         int color = 0;
@@ -165,6 +182,14 @@ public class ContactDetails extends OdooCompatActivity implements
         }
         mForm.setIconTintColor(color);
         mForm.initForm(record);
+    }
+
+    private void checkControls() {
+        findViewById(R.id.full_address).setOnClickListener(this);
+        findViewById(R.id.website).setOnClickListener(this);
+        findViewById(R.id.email).setOnClickListener(this);
+        findViewById(R.id.phone_number).setOnClickListener(this);
+        findViewById(R.id.mobile_number).setOnClickListener(this);
     }
 
     private void setImage() {
@@ -235,8 +260,14 @@ public class ContactDetails extends OdooCompatActivity implements
                 final OValues values = mForm.getValues();
                 if (values != null){
                     if (inNetwork()) {
-                        ODataRow country = resCountry.browse(values.getInt("country_id"));
-                        values.put("country_id", country.getInt("id"));
+                        if (!TextUtils.equals(values.getString("country_id"), "false")){
+                            ODataRow country = resCountry.browse(values.getInt("country_id"));
+                            values.put("country_id", country.getInt("id"));
+                        }
+                        if (!TextUtils.equals(values.getString("state_id"), "false")){
+                            ODataRow state = resCountryState.browse(values.getInt("state_id"));
+                            values.put("state_id", state.get("id"));
+                        }
                         new ContactSaveOperation().execute(values);
                     } else {
                         Toast.makeText(this, R.string.toast_network_required, Toast.LENGTH_LONG).show();
@@ -302,6 +333,21 @@ public class ContactDetails extends OdooCompatActivity implements
     public void onClick(View v) {
         int id = v.getId();
         switch (id){
+            case R.id.full_address:
+                IntentUtils.redirectToMap(this, record.getString("full_address"));
+                break;
+            case R.id.website:
+                IntentUtils.openURLInBrowser(this, record.getString("website"));
+                break;
+            case R.id.email:
+                IntentUtils.requestMessage(this, record.getString("email"));
+                break;
+            case R.id.phone_number:
+                IntentUtils.requestCall(this, record.getString("phone"));
+                break;
+            case R.id.mobile_number:
+                IntentUtils.requestCall(this, record.getString("mobile"));
+                break;
             case R.id.captureImage:
                 mOFileManager.requestForFile(OFileManager.RequestType.IMAGE_OR_CAPTURE_IMAGE);
                 break;

@@ -23,7 +23,6 @@ public class ProductCategory extends OModel {
             .addSelection("normal", "Normal")
             .setDefaultValue("Normal");
     OColumn parent_left = new OColumn("Left Parent", OInteger.class).setDefaultValue(1);
-    OColumn parent_rightparent_left = new OColumn("Right Parent", OInteger.class).setDefaultValue(1);
     OColumn product_count = new OColumn("# Products", OInteger.class);
 
     public ProductCategory(Context context, OUser user) {

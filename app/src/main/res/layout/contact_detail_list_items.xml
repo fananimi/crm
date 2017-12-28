@@ -82,28 +82,56 @@
                 android:layout_marginLeft="72dp" />
 
             <odoo.controls.OField
-                android:id="@+id/full_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:controlLabel="@string/label_address"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="street"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="state_id"
-                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
-
-            <odoo.controls.OField
+                android:id="@+id/country_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:fieldLabelColor="@color/theme_secondary"
                 app:fieldName="country_id"
+                app:widgetType="SearchableLive"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/state_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="state_id"
+                app:widgetType="SearchableLive"
                 app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="city"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/street"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="street"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/street2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="street2"
+                app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/full_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="full_address"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
 
             <View
                 style="@style/ViewSeparator"
