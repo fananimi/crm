@@ -35,6 +35,7 @@
     <string name="label_warning">Warning</string>
     <string name="label_error">Error</string>
     <string name="label_share">Share</string>
+    <string name="label_add_contact">Add to contact</string>
     <string name="label_import_contact">Import</string>
     <string name="label_address">Address</string>
     <string name="label_reply">Reply</string>

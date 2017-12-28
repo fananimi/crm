@@ -3,6 +3,7 @@ package com.odoo.addons.products;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -156,24 +157,13 @@ public class ProductDetail extends OdooCompatActivity implements
     private void setImage() {
         if (record != null){
             productImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            productImage.setImageBitmap(getImage());
+            Bitmap image = ProductTemplate.getImage(this, record);
+            if (image != null){
+                productImage.setImageBitmap(image);
+            }
         } else {
             productImage.setColorFilter(Color.parseColor("#ffffff"));
         }
-    }
-
-    private Bitmap getImage(){
-        Bitmap img;
-        if (!record.getString("image").equals("false")) {
-            img = BitmapUtils.getBitmapImage(this, record.getString("image"));
-        } else if (!record.getString("image_medium").equals("false")) {
-            img = BitmapUtils.getBitmapImage(this, record.getString("image_medium"));
-        } else if (!record.getString("image_small").equals("false")){
-            img = BitmapUtils.getBitmapImage(this, record.getString("image_small"));
-        } else {
-            img = BitmapUtils.getAlphabetImage(this, record.getString("name"));
-        }
-        return img;
     }
 
     public boolean inNetwork() {
@@ -466,8 +456,11 @@ public class ProductDetail extends OdooCompatActivity implements
                 OutputStream imgOut = null;
                 imgFile = new File(OStorageUtils.getDirectoryPath("image"), record.getString("name") + ".jpg");
                 imgOut = new FileOutputStream(imgFile);
-                Bitmap bmp = getImage();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, imgOut);
+                Bitmap image = ProductTemplate.getImage(ProductDetail.this, record);
+                if (image == null) {
+                    image = BitmapFactory.decodeResource(ProductDetail.this.getResources(), R.drawable.ic_shopping_basket_white_24dp);
+                }
+                image.compress(Bitmap.CompressFormat.JPEG, 100, imgOut);
                 imgOut.flush();
                 imgOut.close();
                 status = true;

@@ -27,6 +27,10 @@
                 android:icon="@drawable/ic_share_white_24dp"
                 android:title="@string/label_share"/>
             <item
+                android:id="@+id/menu_contact_import"
+                android:icon="@drawable/ic_import_contacts_white_24dp"
+                android:title="@string/label_import_contact"/>
+            <item
                 android:id="@+id/menu_contact_delete"
                 android:icon="@drawable/ic_delete_white_24dp"
                 android:title="@string/label_delete" />

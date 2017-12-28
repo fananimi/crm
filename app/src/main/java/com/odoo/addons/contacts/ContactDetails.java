@@ -108,7 +108,7 @@ public class ContactDetails extends OdooCompatActivity implements
 
     private enum ContactOperationType {
         Share,
-        View
+        Import
     }
 
     @Override
@@ -204,8 +204,6 @@ public class ContactDetails extends OdooCompatActivity implements
             Bitmap image = ResPartner.getImage(this, record);
             if (image != null){
                 contactImage.setImageBitmap(image);
-            } else {
-                BitmapUtils.getAlphabetImage(this, record.getString("name"));
             }
         } else {
             contactImage.setColorFilter(Color.parseColor("#ffffff"));
@@ -284,6 +282,9 @@ public class ContactDetails extends OdooCompatActivity implements
                 break;
             case R.id.menu_contact_share:
                 new ContactOpenOperation().execute(ContactOperationType.Share);
+                break;
+            case R.id.menu_contact_import:
+                new ContactOpenOperation().execute(ContactOperationType.Import);
                 break;
             case R.id.menu_contact_delete:
                 if (inNetwork()){
@@ -590,19 +591,21 @@ public class ContactDetails extends OdooCompatActivity implements
             super.onPostExecute(success);
             mDialog.dismiss();
             if (success) {
-                Intent shareCaptionIntent = new Intent();
+                Intent shareContactIntent = new Intent();
                 switch (mode){
-                    case View:
-                        shareCaptionIntent.setAction(Intent.ACTION_VIEW);
-                        shareCaptionIntent.setDataAndType(Uri.fromFile(contactFile), "text/x-vcard");
+                    case Import:
+                        shareContactIntent.setAction(Intent.ACTION_VIEW);
+                        shareContactIntent.setDataAndType(Uri.fromFile(contactFile), "text/x-vcard");
+                        shareContactIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(shareContactIntent);
                         break;
                     case Share:
-                        shareCaptionIntent.setAction(Intent.ACTION_SEND);
-                        shareCaptionIntent.setType("text/x-vcard");
-                        shareCaptionIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contactFile));
+                        shareContactIntent.setAction(Intent.ACTION_SEND);
+                        shareContactIntent.setType("text/x-vcard");
+                        shareContactIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contactFile));
+                        startActivity(Intent.createChooser(shareContactIntent, "Share To"));
                         break;
                 }
-                startActivity(shareCaptionIntent);
             } else {
                 Toast.makeText(ContactDetails.this, R.string.error_general, Toast.LENGTH_LONG).show();
             }

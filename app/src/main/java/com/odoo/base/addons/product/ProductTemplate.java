@@ -1,6 +1,7 @@
 package com.odoo.base.addons.product;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.odoo.BuildConfig;
 import com.odoo.base.addons.res.ResCompany;
@@ -19,6 +20,7 @@ import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OText;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.support.OUser;
+import com.odoo.core.utils.BitmapUtils;
 
 /**
  * Created by fanani on 12/26/17.
@@ -109,6 +111,20 @@ public class ProductTemplate extends OModel {
             symbol = row.getString("symbol");
         }
         return symbol;
+    }
+
+    public static Bitmap getImage(Context context, ODataRow record){
+        Bitmap img;
+        if (!record.getString("image").equals("false")) {
+            img = BitmapUtils.getBitmapImage(context, record.getString("image"));
+        } else if (!record.getString("image_medium").equals("false")) {
+            img = BitmapUtils.getBitmapImage(context, record.getString("image_medium"));
+        } else if (!record.getString("image_small").equals("false")){
+            img = BitmapUtils.getBitmapImage(context, record.getString("image_small"));
+        } else {
+            img = null;
+        }
+        return img;
     }
 
 }
