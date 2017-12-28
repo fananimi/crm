@@ -30,13 +30,13 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkError;
 import com.odoo.App;
 import com.odoo.R;
 import com.odoo.base.addons.ir.feature.OFileManager;
@@ -61,9 +61,8 @@ import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,6 +103,11 @@ public class ContactDetails extends OdooCompatActivity implements
     // Java Component
     private Boolean mEditMode = false;
     private String mNewImage = null;
+
+    private enum ContactOperationType {
+        Share,
+        View
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -260,6 +264,9 @@ public class ContactDetails extends OdooCompatActivity implements
                 final OValues values = mForm.getValues();
                 if (values != null){
                     if (inNetwork()) {
+                        if (mNewImage != null) {
+                            values.put("image", mNewImage);
+                        }
                         if (!TextUtils.equals(values.getString("country_id"), "false")){
                             ODataRow country = resCountry.browse(values.getInt("country_id"));
                             values.put("country_id", country.getInt("id"));
@@ -283,7 +290,7 @@ public class ContactDetails extends OdooCompatActivity implements
                 }
                 break;
             case R.id.menu_contact_share:
-                new ContactShareOperation().execute();
+                new ContactOpenOperation().execute(ContactOperationType.Share);
                 break;
             case R.id.menu_contact_delete:
                 if (inNetwork()){
@@ -374,6 +381,7 @@ public class ContactDetails extends OdooCompatActivity implements
 
         private ODataRow results;
         private ProgressDialog mDialog;
+        private String mMessage;
 
         @Override
         protected void onPreExecute() {
@@ -390,10 +398,7 @@ public class ContactDetails extends OdooCompatActivity implements
             final OValues values = params[0];
             try {
                 final ORecordValues data = ResPartner.valuesToData(values);
-                if (mNewImage != null){
-                    data.put("image", mNewImage);
-                }
-                if (record == null){
+                if (record == null) {
                     // create new record
                     runOnUiThread(new Runnable() {
                         @Override
@@ -402,16 +407,32 @@ public class ContactDetails extends OdooCompatActivity implements
                         }
                     });
                     Thread.sleep(500);
-                    int newID = resPartner.getServerDataHelper().createOnServer(data);
-                    values.put("id", newID);
+                    int id = resPartner.getServerDataHelper().createOnServer(data);
+                    values.put("id", id);
                     results = resPartner.quickCreateRecord(values.toDataRow());
                 } else {
+                    // update record
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDialog.setMessage("Updating " + values.getString("name"));
+                        }
+                    });
+                    Thread.sleep(500);
                     resPartner.getServerDataHelper().updateOnServer(data, record.getInt("id"));
-                    results = resPartner.quickCreateRecord(record);
+                    ODomain domain = new ODomain();
+                    domain.add("id", "=", record.get("id"));
+                    resPartner.quickSyncRecords(domain);
+                    results = record;
                 }
                 status = true;
+            } catch (NetworkError ex){
+                ex.printStackTrace();
+                mMessage = getString(R.string.error_network);
+                status = false;
             } catch (Exception ex){
                 ex.printStackTrace();
+                mMessage = ex.toString();
                 status = false;
             }
             return status;
@@ -427,7 +448,7 @@ public class ContactDetails extends OdooCompatActivity implements
                 Toast.makeText(ContactDetails.this, msg, Toast.LENGTH_LONG).show();
                 reloadActivity(results);
             } else {
-                Toast.makeText(ContactDetails.this, R.string.error_general, Toast.LENGTH_LONG).show();
+                Toast.makeText(ContactDetails.this, mMessage, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -486,10 +507,11 @@ public class ContactDetails extends OdooCompatActivity implements
     }
 
 
-    private class ContactShareOperation extends AsyncTask<Void, Void, Boolean> {
+    private class ContactOpenOperation extends AsyncTask<ContactOperationType, Void, Boolean> {
 
-        private File imgFile;
+        private File contactFile;
         private ProgressDialog mDialog;
+        private ContactOperationType mode;
 
         @Override
         protected void onPreExecute() {
@@ -501,16 +523,56 @@ public class ContactDetails extends OdooCompatActivity implements
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Boolean doInBackground(ContactOperationType... params) {
+            mode = params[0];
             boolean status ;
             try {
-                OutputStream imgOut = null;
-                imgFile = new File(OStorageUtils.getDirectoryPath("image"), record.getString("name") + ".jpg");
-                imgOut = new FileOutputStream(imgFile);
-                Bitmap bmp = getImage();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, imgOut);
-                imgOut.flush();
-                imgOut.close();
+                // follow this instruction https://en.wikipedia.org/wiki/VCard
+                contactFile = new File(OStorageUtils.getDirectoryPath("file"), record.getString("name") + ".vcf");
+                FileWriter fw = new FileWriter(contactFile);
+                fw.write("BEGIN:VCARD\r\n");
+                fw.write("VERSION:3.0\n\n");
+                fw.write("N:" + record.getString("name") + ";;;;\n\n");
+                fw.write("FN:" + record.getString("name") + "\n\n");
+                if (!TextUtils.equals(record.getString("email"), "false")){
+                    fw.write("EMAIL:" + record.getString("email") + "\r\n");
+                }
+                if (!TextUtils.equals(record.getString("phone"), "false")){
+                    fw.write("TEL;TYPE=HOME,VOICE:" + record.getString("phone") + "\r\n");
+                }
+                if (!TextUtils.equals(record.getString("mobile"), "false")){
+                    fw.write("TEL;TYPE=HOME,VOICE:" + record.getString("mobile") + "\r\n");
+                }
+                String vAddr = "";
+                vAddr += "ADR;TYPE=HOME:;;";
+                if (!TextUtils.equals(record.getString("street"), "false")){
+                    vAddr += record.getString("street");
+                }
+                vAddr += ";";
+                if (!TextUtils.equals(record.getString("street2"), "false")){
+                    vAddr += record.getString("street2");
+                }
+                vAddr += ";";
+                if (!TextUtils.equals(record.getString("state_id"), "false")){
+                    vAddr += record.getM2ORecord("state_id").browse().getString("code");
+                }
+                vAddr += ";";
+                if (!TextUtils.equals(record.getString("zip"), "false")){
+                    vAddr += record.getString("zip");
+                }
+                vAddr += ";";
+                if (!TextUtils.equals(record.getString("country_id"), "false")){
+                    vAddr += record.getM2ORecord("country_id").browse().getString("code");
+                }
+                vAddr += "\r\n";
+                fw.write(vAddr);
+                if (!TextUtils.equals(record.getString("website"), "false")){
+                    fw.write("URL:" + record.getString("website") + "\r\n");
+                }
+
+                fw.write("END:VCARD\n");
+                fw.flush();
+                fw.close();
                 status = true;
             } catch (FileNotFoundException e){
                 status = false;
@@ -527,21 +589,18 @@ public class ContactDetails extends OdooCompatActivity implements
             mDialog.dismiss();
             if (success) {
                 Intent shareCaptionIntent = new Intent();
-                shareCaptionIntent.setAction(Intent.ACTION_SEND);
-                shareCaptionIntent.setType("image/*");
-                shareCaptionIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(imgFile));
-                //set caption
-                String text = "*"
-                        + record.getString("name")
-                        + "*"
-                        + "\n"
-                        + record.getString("currency_symbol")
-                        + " "
-                        + record.getString("lst_price");
-                // shareCaptionIntent.putExtra(Intent.EXTRA_TITLE, record.getString("name"));
-                // shareCaptionIntent.putExtra(Intent.EXTRA_SUBJECT, record.getString("name"));
-                shareCaptionIntent.putExtra(Intent.EXTRA_TEXT, text);
-                startActivity(Intent.createChooser(shareCaptionIntent, "Share To"));
+                switch (mode){
+                    case View:
+                        shareCaptionIntent.setAction(Intent.ACTION_VIEW);
+                        shareCaptionIntent.setDataAndType(Uri.fromFile(contactFile), "text/x-vcard");
+                        break;
+                    case Share:
+                        shareCaptionIntent.setAction(Intent.ACTION_SEND);
+                        shareCaptionIntent.setType("text/x-vcard");
+                        shareCaptionIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contactFile));
+                        break;
+                }
+                startActivity(shareCaptionIntent);
             } else {
                 Toast.makeText(ContactDetails.this, R.string.error_general, Toast.LENGTH_LONG).show();
             }

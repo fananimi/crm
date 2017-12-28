@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkError;
 import com.odoo.App;
 import com.odoo.R;
 import com.odoo.base.addons.ir.feature.OFileManager;
@@ -220,6 +221,9 @@ public class ProductDetail extends OdooCompatActivity implements
                 final OValues values = mForm.getValues();
                 if (values != null){
                     if (inNetwork()) {
+                        if (mNewImage != null){
+                            values.put("image", mNewImage);
+                        }
                         if (!TextUtils.equals(values.getString("categ_id"), "false")){
                             ODataRow category = productCategory.browse(values.getInt("categ_id"));
                             values.put("categ_id", category.getInt("id"));
@@ -315,6 +319,7 @@ public class ProductDetail extends OdooCompatActivity implements
 
         private ODataRow results;
         private ProgressDialog mDialog;
+        private String mMessage;
 
         @Override
         protected void onPreExecute() {
@@ -331,10 +336,7 @@ public class ProductDetail extends OdooCompatActivity implements
             final OValues values = params[0];
             try {
                 final ORecordValues data = ProductTemplate.valuesToData(values);
-                if (mNewImage != null){
-                    data.put("image", mNewImage);
-                }
-                if (record == null){
+                if (record == null) {
                     // create new record
                     runOnUiThread(new Runnable() {
                         @Override
@@ -343,16 +345,32 @@ public class ProductDetail extends OdooCompatActivity implements
                         }
                     });
                     Thread.sleep(500);
-                    int newID = productTemplate.getServerDataHelper().createOnServer(data);
-                    values.put("id", newID);
+                    int id = productTemplate.getServerDataHelper().createOnServer(data);
+                    values.put("id", id);
                     results = productTemplate.quickCreateRecord(values.toDataRow());
                 } else {
+                    // update record
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDialog.setMessage("Updating " + values.getString("name"));
+                        }
+                    });
+                    Thread.sleep(500);
                     productTemplate.getServerDataHelper().updateOnServer(data, record.getInt("id"));
-                    results = productTemplate.quickCreateRecord(record);
+                    ODomain domain = new ODomain();
+                    domain.add("id", "=", record.get("id"));
+                    productTemplate.quickSyncRecords(domain);
+                    results = record;
                 }
                 status = true;
+            } catch (NetworkError ex){
+                ex.printStackTrace();
+                mMessage = getString(R.string.error_network);
+                status = false;
             } catch (Exception ex){
                 ex.printStackTrace();
+                mMessage = ex.toString();
                 status = false;
             }
             return status;
@@ -368,7 +386,7 @@ public class ProductDetail extends OdooCompatActivity implements
                 Toast.makeText(ProductDetail.this, msg, Toast.LENGTH_LONG).show();
                 reloadActivity(results);
             } else {
-                Toast.makeText(ProductDetail.this, R.string.error_general, Toast.LENGTH_LONG).show();
+                Toast.makeText(ProductDetail.this, mMessage, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -458,7 +476,6 @@ public class ProductDetail extends OdooCompatActivity implements
             } catch (IOException e){
                 status = false;
             }
-
             return status;
         }
 

@@ -19,6 +19,7 @@
     <string name="custom">Custom...</string>
     <string name="error_general">An error occurred Please try again later.</string>
     <string name="error_end_date_small_than_start_date">End date cannot be set before start date.</string>
+    <string name="error_network">Cannot connect to the server. Please check your network connection.</string>
     <string name="label_all">All</string>
     <string name="label_leads">Leads</string>
     <string name="label_lead">Lead</string>
