@@ -25,7 +25,6 @@ import com.odoo.R;
 import com.odoo.addons.calendar.EventDetail;
 import com.odoo.addons.crm.models.CRMCaseStage;
 import com.odoo.addons.crm.models.CRMLead;
-import com.odoo.addons.contacts.Customers;
 import com.odoo.addons.phonecall.PhoneCallDetail;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.base.addons.sale.SaleOrder;
@@ -94,13 +93,13 @@ public class CRMOpportunities extends BaseFragment implements OCursorListAdapter
             if (extra.containsKey(CRMOpportunitiesPager.KEY_STAGE_ID)) {
                 stage_id = extra.getInt(CRMOpportunitiesPager.KEY_STAGE_ID);
             }
-            if (extra.containsKey(Customers.KEY_FILTER_REQUEST)) {
+//            if (extra.containsKey(Customers.KEY_FILTER_REQUEST)) {
                 filter_customer_data = true;
-                customer_id = extra.getInt(Customers.KEY_CUSTOMER_ID);
+//                customer_id = extra.getInt(Customers.KEY_CUSTOMER_ID);
                 mView.findViewById(R.id.customer_filterContainer).setVisibility(View.VISIBLE);
                 OControls.setText(mView, R.id.customer_name, extra.getString("name"));
                 mView.findViewById(R.id.cancel_filter).setOnClickListener(this);
-            }
+//            }
         }
         setHasSyncStatusObserver(TAG, this, db());
         initAdapter();
@@ -382,13 +381,13 @@ public class CRMOpportunities extends BaseFragment implements OCursorListAdapter
                 break;
             case R.id.menu_lead_customer_location:
                 if (!row.getString("partner_id").equals("false")) {
-                    String address = partner.getAddress(partner.browse(row.getInt("partner_id")));
-                    if (!address.equals("false") && !TextUtils.isEmpty(address)) {
-                        IntentUtils.redirectToMap(getActivity(), address);
-                    } else {
-                        Toast.makeText(getActivity(), _s(R.string.label_no_location_found), Toast.LENGTH_LONG).
-                                show();
-                    }
+//                    String address = partner.getAddress(partner.browse(row.getInt("partner_id")));
+//                    if (!address.equals("false") && !TextUtils.isEmpty(address)) {
+//                        IntentUtils.redirectToMap(getActivity(), address);
+//                    } else {
+//                        Toast.makeText(getActivity(), _s(R.string.label_no_location_found), Toast.LENGTH_LONG).
+//                                show();
+//                    }
                 } else {
                     Toast.makeText(getActivity(), _s(R.string.label_no_contact_found), Toast.LENGTH_LONG).show();
                 }

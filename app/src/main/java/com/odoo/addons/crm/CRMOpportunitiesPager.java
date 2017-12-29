@@ -45,7 +45,6 @@ import android.widget.Toast;
 import com.odoo.R;
 import com.odoo.addons.crm.models.CRMCaseStage;
 import com.odoo.addons.crm.models.CRMLead;
-import com.odoo.addons.contacts.Customers;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.support.addons.fragment.BaseFragment;
@@ -97,10 +96,10 @@ public class CRMOpportunitiesPager extends BaseFragment implements ViewPager.OnP
         mView = view;
         mContext = getActivity();
         Bundle extra = getArguments();
-        if (extra.containsKey(Customers.KEY_FILTER_REQUEST)) {
+//        if (extra.containsKey(Customers.KEY_FILTER_REQUEST)) {
             filterCustomerOpp = true;
-            customer_id = extra.getInt(Customers.KEY_CUSTOMER_ID);
-        }
+//            customer_id = extra.getInt(Customers.KEY_CUSTOMER_ID);
+//        }
 
         crmStage = new CRMCaseStage(getActivity(), null);
         handler = new Handler();
@@ -263,8 +262,8 @@ public class CRMOpportunitiesPager extends BaseFragment implements ViewPager.OnP
             bundle.putString(KEY_FILTER, key_filter);
             bundle.putInt("index", index);
             if (filterCustomerOpp) {
-                bundle.putBoolean(Customers.KEY_FILTER_REQUEST, true);
-                bundle.putInt(Customers.KEY_CUSTOMER_ID, customer_id);
+//                bundle.putBoolean(Customers.KEY_FILTER_REQUEST, true);
+//                bundle.putInt(Customers.KEY_CUSTOMER_ID, customer_id);
                 bundle.putString("name", getArguments().getString("name"));
             }
             crm.setArguments(bundle);

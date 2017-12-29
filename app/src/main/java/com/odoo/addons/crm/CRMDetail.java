@@ -33,7 +33,6 @@ import com.odoo.App;
 import com.odoo.R;
 import com.odoo.addons.crm.models.CRMCaseStage;
 import com.odoo.addons.crm.models.CRMLead;
-import com.odoo.addons.contacts.Customers;
 import com.odoo.base.addons.res.ResCompany;
 import com.odoo.base.addons.res.ResUsers;
 import com.odoo.base.addons.sale.SaleOrder;
@@ -84,10 +83,10 @@ public class CRMDetail extends OdooCompatActivity {
         mForm = (OForm) findViewById(R.id.crmLeadForm);
         currency_symbol = (TextView) findViewById(R.id.currency_symbol);
         if (!extra.containsKey(OColumn.ROW_ID)) {
-            if (extra.getString("type").equals(Customers.Type.Opportunities.toString())) {
+//            if (extra.getString("type").equals(Customers.Type.Opportunities.toString())) {
                 type = "opportunity";
                 findViewById(R.id.opportunity_controls).setVisibility(View.VISIBLE);
-            }
+//            }
             if (extra.containsKey("stage_id")) {
                 stage_id = extra.getInt("stage_id");
             }

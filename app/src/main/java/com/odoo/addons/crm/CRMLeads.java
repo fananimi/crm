@@ -42,7 +42,6 @@ import android.widget.Toast;
 
 import com.odoo.R;
 import com.odoo.addons.crm.models.CRMLead;
-import com.odoo.addons.contacts.Customers;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.fields.OColumn;
@@ -106,13 +105,13 @@ public class CRMLeads extends BaseFragment implements OCursorListAdapter.OnViewB
         mView = view;
         parent().setOnActivityResultListener(this);
         Bundle extra = getArguments();
-        if (extra != null && extra.containsKey(Customers.KEY_FILTER_REQUEST)) {
+//        if (extra != null && extra.containsKey(Customers.KEY_FILTER_REQUEST)) {
             filter_customer_data = true;
-            customer_id = extra.getInt(Customers.KEY_CUSTOMER_ID);
+//            customer_id = extra.getInt(Customers.KEY_CUSTOMER_ID);
             mView.findViewById(R.id.customer_filterContainer).setVisibility(View.VISIBLE);
             OControls.setText(mView, R.id.customer_name, extra.getString("name"));
             mView.findViewById(R.id.cancel_filter).setOnClickListener(this);
-        }
+//        }
         setHasSyncStatusObserver(TAG, this, db());
         initAdapter();
     }
@@ -370,12 +369,12 @@ public class CRMLeads extends BaseFragment implements OCursorListAdapter.OnViewB
                 break;
             case R.id.menu_lead_customer_location:
                 if (!row.getString("partner_id").equals("false")) {
-                    String address = partner.getAddress(partner.browse(row.getInt("partner_id")));
-                    if (!address.equals("false") && !TextUtils.isEmpty(address)) {
-                        IntentUtils.redirectToMap(getActivity(), address);
-                    } else {
-                        Toast.makeText(getActivity(), "No location found !", Toast.LENGTH_LONG).show();
-                    }
+//                    String address = partner.getAddress(partner.browse(row.getInt("partner_id")));
+//                    if (!address.equals("false") && !TextUtils.isEmpty(address)) {
+//                        IntentUtils.redirectToMap(getActivity(), address);
+//                    } else {
+//                        Toast.makeText(getActivity(), "No location found !", Toast.LENGTH_LONG).show();
+//                    }
                 } else {
                     Toast.makeText(getActivity(), "No partner found !", Toast.LENGTH_LONG).show();
                 }
