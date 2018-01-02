@@ -1,4 +1,4 @@
-package com.odoo.addons.products;
+package com.odoo.addons.product;
 
 import android.content.Context;
 import android.database.Cursor;

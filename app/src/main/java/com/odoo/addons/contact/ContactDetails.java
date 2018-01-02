@@ -17,7 +17,7 @@
  * <p/>
  * Created on 14/6/16 6:31 PM
  */
-package com.odoo.addons.contacts;
+package com.odoo.addons.contact;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -37,7 +37,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkError;
 import com.odoo.App;
 import com.odoo.R;
 import com.odoo.base.addons.ir.feature.OFileManager;

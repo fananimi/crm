@@ -19,8 +19,8 @@
  */
 package com.odoo.config;
 
-import com.odoo.addons.contacts.Contact;
-import com.odoo.addons.products.Products;
+import com.odoo.addons.contact.Contacts;
+import com.odoo.addons.product.Products;
 import com.odoo.addons.sale.Sales;
 import com.odoo.core.support.addons.AddonsHelper;
 import com.odoo.core.support.addons.OAddon;
@@ -36,7 +36,7 @@ public class Addons extends AddonsHelper {
      * OAddon partners = new OAddon(Partners.class).withSequence(2);
      */
 //    OAddon a_agenda = new OAddon(CalendarDashboard.class).setDefault();
-    OAddon contact = new OAddon(Contact.class).withSequence(0).setDefault();
+    OAddon contact = new OAddon(Contacts.class).withSequence(0).setDefault();
     OAddon product = new OAddon(Products.class).withSequence(1);
     OAddon sale = new OAddon(Sales.class).withSequence(2);
 //    OAddon c_crm_leads = new OAddon(CRMLeads.class);

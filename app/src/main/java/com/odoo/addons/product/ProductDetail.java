@@ -1,4 +1,4 @@
-package com.odoo.addons.products;
+package com.odoo.addons.product;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkError;
 import com.odoo.App;
 import com.odoo.R;
 import com.odoo.base.addons.ir.feature.OFileManager;

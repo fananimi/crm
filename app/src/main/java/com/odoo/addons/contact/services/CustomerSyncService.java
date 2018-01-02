@@ -17,13 +17,12 @@
  *
  * Created on 2/1/15 11:07 AM
  */
-package com.odoo.addons.contacts.services;
+package com.odoo.addons.contact.services;
 
 import android.content.Context;
 import android.os.Bundle;
 
 import com.odoo.base.addons.res.ResPartner;
-import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.service.OSyncAdapter;
 import com.odoo.core.service.OSyncService;
 import com.odoo.core.support.OUser;

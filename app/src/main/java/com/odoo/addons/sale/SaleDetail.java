@@ -19,54 +19,31 @@
  */
 package com.odoo.addons.sale;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.odoo.App;
 import com.odoo.R;
 import com.odoo.base.addons.product.ProductProduct;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.base.addons.sale.SaleOrder;
 import com.odoo.core.orm.ODataRow;
-import com.odoo.core.orm.OValues;
-import com.odoo.core.orm.ServerDataHelper;
-import com.odoo.core.orm.fields.OColumn;
-import com.odoo.core.rpc.helper.OArguments;
-import com.odoo.core.rpc.helper.ORecordValues;
 import com.odoo.core.support.OdooCompatActivity;
-import com.odoo.core.utils.JSONUtils;
-import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OAppBarUtils;
-import com.odoo.core.utils.OControls;
-import com.odoo.core.utils.OResource;
-import com.odoo.core.utils.StringUtils;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import odoo.controls.ExpandableListControl;
-import odoo.controls.OField;
 import odoo.controls.OForm;
 
 import static com.odoo.addons.sale.Sales.Type;
 
-public class SalesDetail extends OdooCompatActivity implements View.OnClickListener {
-    public static final String TAG = SalesDetail.class.getSimpleName();
+public class SaleDetail extends OdooCompatActivity implements View.OnClickListener {
+    public static final String TAG = SaleDetail.class.getSimpleName();
     public static final int REQUEST_ADD_ITEMS = 323;
     private Bundle extra;
     private OForm mForm;

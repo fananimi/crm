@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:fitsSystemWindows="true"
-    tools:context=".addons.contacts.ContactDetails">
+    tools:context=".addons.contact.ContactDetails">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/customer_detail_appbar"

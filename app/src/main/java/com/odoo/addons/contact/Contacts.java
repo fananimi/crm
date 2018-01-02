@@ -17,7 +17,7 @@
  * <p/>
  * Created on 30/12/14 3:28 PM
  */
-package com.odoo.addons.contacts;
+package com.odoo.addons.contact;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -58,7 +58,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Contact extends BaseFragment implements
+public class Contacts extends BaseFragment implements
         ISyncStatusObserverListener,
         LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener,
@@ -90,7 +90,7 @@ public class Contact extends BaseFragment implements
     // Java Component
     private String mCurFilter = null;
     private boolean syncRequested = false;
-    private Contact.Type mType;
+    private Contacts.Type mType;
     public enum Type {
         Customer,
         Supplier,
@@ -212,7 +212,7 @@ public class Contact extends BaseFragment implements
                     OControls.setGone(mView, R.id.loadingProgress);
                     OControls.setVisible(mView, R.id.swipe_container);
                     OControls.setGone(mView, R.id.data_list_no_item);
-                    setHasSwipeRefreshView(mView, R.id.swipe_container, Contact.this);
+                    setHasSwipeRefreshView(mView, R.id.swipe_container, Contacts.this);
                 }
             }, 500);
         } else {
@@ -222,7 +222,7 @@ public class Contact extends BaseFragment implements
                     OControls.setGone(mView, R.id.loadingProgress);
                     OControls.setGone(mView, R.id.swipe_container);
                     OControls.setVisible(mView, R.id.data_list_no_item);
-                    setHasSwipeRefreshView(mView, R.id.data_list_no_item, Contact.this);
+                    setHasSwipeRefreshView(mView, R.id.data_list_no_item, Contacts.this);
                     OControls.setImage(mView, R.id.icon, R.drawable.ic_action_customers);
                     OControls.setText(mView, R.id.title, _s(R.string.label_no_customer_found));
                     OControls.setText(mView, R.id.subTitle, "");
@@ -250,7 +250,7 @@ public class Contact extends BaseFragment implements
         List<ODrawerItem> items = new ArrayList<ODrawerItem>();
         items.add(new ODrawerItem(TAG).setTitle("Contact")
                 .setIcon(R.drawable.ic_action_customers)
-                .setInstance(new Contact()));
+                .setInstance(new Contacts()));
         return items;
     }
 

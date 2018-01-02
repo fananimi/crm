@@ -41,9 +41,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".addons.contacts.ContactDetails" />
+        <activity android:name=".addons.contact.ContactDetails" />
         <activity
-            android:name="com.odoo.addons.products.ProductDetail" />
+            android:name="com.odoo.addons.product.ProductDetail" />
         <activity android:name=".core.account.ManageAccounts" />
         <activity
             android:name=".OdooActivity"
@@ -87,13 +87,13 @@
 
         <!-- Sync Provider & Service  // -->
         <provider
-            android:name=".addons.contacts.providers.CustomersSyncProvider"
+            android:name=".addons.contact.providers.CustomersSyncProvider"
             android:authorities="${applicationId}.provider.content.sync.res_partner"
             android:label="@string/sync_label_customers"
             android:multiprocess="true" />
 
         <service
-            android:name=".addons.contacts.services.CustomerSyncService"
+            android:name=".addons.contact.services.CustomerSyncService"
             android:exported="true"
             android:process=":sync_customer">
             <intent-filter>
@@ -182,13 +182,13 @@
         </service>
 
         <provider
-            android:name="com.odoo.addons.products.providers.ProductSyncProvider"
+            android:name="com.odoo.addons.product.providers.ProductSyncProvider"
             android:authorities="${applicationId}.core.provider.content.sync.product.template"
             android:label="@string/sync_label_product"
             android:multiprocess="true" />
 
         <service
-            android:name="com.odoo.addons.products.services.ProductSyncService"
+            android:name="com.odoo.addons.product.services.ProductSyncService"
             android:exported="true"
             android:process=":sync_product">
             <intent-filter>
@@ -218,7 +218,7 @@
             android:name=".addons.phonecall.PhoneCallDetail"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".addons.sale.SalesDetail"
+            android:name=".addons.sale.SaleDetail"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <!-- Phone state receiver// -->
