@@ -413,17 +413,13 @@ public class ContactDetails extends OdooCompatActivity implements
                         }
                     });
                     Thread.sleep(500);
-                    resPartner.getServerDataHelper().updateOnServer(data, record.getInt("id"));
+                    int id = resPartner.getServerDataHelper().updateOnServer(data, record.getInt("id"));
                     ODomain domain = new ODomain();
-                    domain.add("id", "=", record.get("id"));
+                    domain.add("id", "=", id);
                     resPartner.quickSyncRecords(domain);
                     results = record;
                 }
                 status = true;
-            } catch (NetworkError ex){
-                ex.printStackTrace();
-                mMessage = getString(R.string.error_network);
-                status = false;
             } catch (Exception ex){
                 ex.printStackTrace();
                 mMessage = ex.toString();

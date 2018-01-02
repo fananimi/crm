@@ -347,17 +347,13 @@ public class ProductDetail extends OdooCompatActivity implements
                         }
                     });
                     Thread.sleep(500);
-                    productTemplate.getServerDataHelper().updateOnServer(data, record.getInt("id"));
+                    int id = productTemplate.getServerDataHelper().updateOnServer(data, record.getInt("id"));
                     ODomain domain = new ODomain();
-                    domain.add("id", "=", record.get("id"));
+                    domain.add("id", "=", id);
                     productTemplate.quickSyncRecords(domain);
                     results = record;
                 }
                 status = true;
-            } catch (NetworkError ex){
-                ex.printStackTrace();
-                mMessage = getString(R.string.error_network);
-                status = false;
             } catch (Exception ex){
                 ex.printStackTrace();
                 mMessage = ex.toString();
