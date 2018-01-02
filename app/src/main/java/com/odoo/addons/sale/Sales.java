@@ -1,29 +1,9 @@
-/**
- * Odoo, Open Source Management Solution
- * Copyright (C) 2012-today Odoo SA (<http:www.odoo.com>)
- * <p/>
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version
- * <p/>
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details
- * <p/>
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http:www.gnu.org/licenses/>
- * <p/>
- * Created on 13/1/15 11:06 AM
- */
 package com.odoo.addons.sale;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -32,9 +12,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -45,12 +25,10 @@ import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
 import com.odoo.core.support.drawer.ODrawerItem;
-import com.odoo.core.support.list.IOnItemClickListener;
 import com.odoo.core.support.list.OCursorListAdapter;
 import com.odoo.core.utils.OControls;
-import com.odoo.core.utils.ODateUtils;
+import com.odoo.core.utils.OCursorUtils;
 import com.odoo.core.utils.OResource;
-import com.odoo.core.utils.controls.OBottomSheet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,15 +37,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Created by fanani on 12/26/17.
+ */
+
 public class Sales extends BaseFragment implements
-        OCursorListAdapter.OnViewBindListener, LoaderManager.LoaderCallbacks<Cursor>,
-        SwipeRefreshLayout.OnRefreshListener, IOnSearchViewChangeListener,
-        ISyncStatusObserverListener, IOnItemClickListener, View.OnClickListener,
-        OBottomSheet.OSheetActionClickListener, OBottomSheet.OSheetItemClickListener {
+        ISyncStatusObserverListener,
+        LoaderManager.LoaderCallbacks<Cursor>,
+        SwipeRefreshLayout.OnRefreshListener,
+        OCursorListAdapter.OnViewBindListener,
+        IOnSearchViewChangeListener,
+        View.OnClickListener,
+        AdapterView.OnItemClickListener {
 
     public static final String TAG = Sales.class.getSimpleName();
     public static final String EXTRA_KEY_TYPE = "extra_key_type";
-
 
     // UI component
     @BindView(R.id.listview)
@@ -89,17 +73,8 @@ public class Sales extends BaseFragment implements
         SaleOrder
     }
 
-//    private View mView;
-//    private OCursorListAdapter mAdapter;
-//    private String mFilter = null;
-//    private Type mType = Type.Quotation;
-//    private Boolean mSyncRequested = false;
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.common_listview, container, false);
         ButterKnife.bind(this, view);
         setHasOptionsMenu(true);
@@ -110,41 +85,43 @@ public class Sales extends BaseFragment implements
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mView = view;
 
         // bind adapter
-        mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.product_row_item);
-        // mAdapter.setOnViewBindListener(this);
+        mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.sale_row_item);
+        mAdapter.setOnViewBindListener(this);
         // mAdapter.setHasSectionIndexers(true, "name");
-        mAdapter.handleItemClickListener(mList, this);
         mList.setAdapter(mAdapter);
-        // mList.setFastScrollAlwaysVisible(true);
-        // mList.setOnItemClickListener(this);
+        mList.setFastScrollAlwaysVisible(true);
+        mList.setOnItemClickListener(this);
 
         getLoaderManager().initLoader(0, null, this);
 
         extras = getArguments();
         if (extras != null && extras.getString(EXTRA_KEY_TYPE) != null){
             mType = Type.valueOf(extras.getString(EXTRA_KEY_TYPE));
+            switch (mType){
+                case Quotation:
+                    OControls.setVisible(mView, R.id.fabButton);
+                    break;
+                case SaleOrder:
+                    OControls.setGone(mView, R.id.fabButton);
+                    break;
+            }
         }
-
     }
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
         OControls.setText(view, R.id.name, row.getString("name"));
-        String format = (db().getUser().getOdooVersion().getVersionNumber() <= 7)
-                ? ODateUtils.DEFAULT_DATE_FORMAT : ODateUtils.DEFAULT_FORMAT;
-        String date = ODateUtils.convertToDefault(row.getString("date_order"),
-                format, "MMMM, dd");
-        OControls.setText(view, R.id.date_order, date);
-        OControls.setText(view, R.id.state, row.getString("state_title"));
+        OControls.setText(view, R.id.order_line_count, row.getString("order_line_count"));
+//        OControls.setText(view, R.id.date_order, row.getString("date_order"));
         OControls.setText(view, R.id.partner_name, row.getString("partner_name"));
+        OControls.setText(view, R.id.state_title, row.getString("state_title"));
         OControls.setText(view, R.id.amount_total, row.getString("amount_total"));
         OControls.setText(view, R.id.currency_symbol, row.getString("currency_symbol"));
-        OControls.setText(view, R.id.order_lines, row.getString("order_line_count"));
     }
 
     @Override
@@ -152,29 +129,37 @@ public class Sales extends BaseFragment implements
         String where = null;
         List<String> args = new ArrayList<>();
 
+        if (mType!=null){
+            switch (mType) {
+                case Quotation:
+                    where = "(state = ? OR state = ? OR state = ?)";
+                    args.addAll(Arrays.asList(
+                            SaleOrder.STATE.draft.toString(),
+                            SaleOrder.STATE.sent.toString(),
+                            SaleOrder.STATE.cancel.toString()
+                    ));
+                    break;
+                case SaleOrder:
+                    where = "(state = ? OR state = ?)";
+                    args.addAll(Arrays.asList(
+                            SaleOrder.STATE.sale.toString(),
+                            SaleOrder.STATE.done.toString()
+                    ));
+                    break;
+            }
+        }
+
         if (!TextUtils.isEmpty(mCurFilter)) {
-            where = "(name like ? OR partner_name like ?)";
+            where += " AND (name LIKE ? OR partner_name LIKE ?)";
             args.addAll(Arrays.asList(
                     "%" + mCurFilter + "%",
                     "%" + mCurFilter + "%"
             ));
         }
 
-        if (mType!=null){
-            switch (mType) {
-                case Quotation:
-                    where += " AND (state = ? OR state = ? OR state = ?)";
-                    args.addAll(Arrays.asList("draft", "sent", "cancel"));
-                    break;
-                case SaleOrder:
-                    where += " AND (state = ? OR state = ?)";
-                    args.addAll(Arrays.asList("sale", "done"));
-                    break;
-            }
-        }
         String selection = (args.size() > 0) ? where : null;
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
-        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "date_order DESC");
+        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "name");
     }
 
     @Override
@@ -241,9 +226,9 @@ public class Sales extends BaseFragment implements
         return extra;
     }
 
-
     @Override
     public void onStatusChange(Boolean refreshing) {
+        // Sync Status
         getLoaderManager().restartLoader(0, null, this);
     }
 
@@ -276,129 +261,31 @@ public class Sales extends BaseFragment implements
 
     @Override
     public void onSearchViewClose() {
-        //Nothing to do
+        // nothing to do
     }
 
     @Override
     public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.fabButton:
-//                Bundle bundle = new Bundle();
-//                bundle.putString("type", Type.Quotation.toString());
-//                IntentUtils.startActivity(getActivity(), SalesDetail.class, bundle);
-//                break;
-//        }
+        switch (v.getId()) {
+            case R.id.fabButton:
+                loadActivity(null);
+                break;
+        }
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-//        if (mType == Type.Quotation)
-//            showSheet((Cursor) mAdapter.getItem(position));
-//        else
-//            onDoubleClick(position);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
+        loadActivity(row);
     }
-
 
     private void loadActivity(ODataRow row) {
-//        Bundle data = new Bundle();
-//        if (row != null) {
-//            data = row.getPrimaryBundleData();
-//        }
-//        IntentUtils.startActivity(getActivity(), ProductDetail.class, data);
+        Bundle data = new Bundle();
+        if (row != null) {
+            data = row.getPrimaryBundleData();
+        }
+//        IntentUtils.startActivity(getActivity(), SaleDetail.class, data);
     }
 
-    @Override
-    public void onItemDoubleClick(View view, int position) {
-//        onDoubleClick(position);
-    }
-
-    private void onDoubleClick(int position) {
-//        ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
-//        Bundle data = row.getPrimaryBundleData();
-//        data.putString("type", mType.toString());
-//        IntentUtils.startActivity(getActivity(), SalesDetail.class, data);
-    }
-
-    private void showSheet(Cursor data) {
-//        OBottomSheet bottomSheet = new OBottomSheet(getActivity());
-//        bottomSheet.setData(data);
-//        bottomSheet.setSheetTitle(data.getString(data.getColumnIndex("name")));
-//        bottomSheet.setActionIcon(R.drawable.ic_action_edit, this);
-//        bottomSheet.setSheetItemClickListener(this);
-//
-//        if (data.getString(data.getColumnIndex("state")).equals("cancel"))
-//            bottomSheet.setSheetActionsMenu(R.menu.menu_quotation_cancel_sheet);
-//        else
-//            bottomSheet.setSheetActionsMenu(R.menu.menu_quotation_sheet);
-//        bottomSheet.show();
-    }
-
-    @Override
-    public void onSheetItemClick(OBottomSheet sheet, MenuItem item, Object data) {
-//        sheet.dismiss();
-//        ODataRow row = OCursorUtils.toDatarow((Cursor) data);
-//        switch (item.getItemId()) {
-//            case R.id.menu_quotation_cancel:
-//                ((SaleOrder) db()).cancelOrder(mType, row, cancelOrder);
-//                break;
-//            case R.id.menu_quotation_new:
-//                if (inNetwork()) {
-//                    ((SaleOrder) db()).newCopyQuotation(row, newCopyQuotation);
-//                } else {
-//                    Toast.makeText(getActivity(), R.string.toast_network_required, Toast.LENGTH_LONG).show();
-//                }
-//                break;
-//            case R.id.menu_so_confirm_sale:
-//                if (row.getFloat("amount_total") > 0) {
-//                    if (inNetwork()) {
-//                        ((SaleOrder) db()).confirmSale(row, confirmSale);
-//                    } else {
-//                        Toast.makeText(getActivity(), R.string.toast_network_required, Toast.LENGTH_LONG).show();
-//                    }
-//                } else {
-//                    OAlert.showWarning(getActivity(), "You cannot a sales order which has no line");
-//                }
-//                break;
-//        }
-    }
-
-    @Override
-    public void onSheetActionClick(OBottomSheet sheet, Object data) {
-//        sheet.dismiss();
-//        ODataRow row = OCursorUtils.toDatarow((Cursor) data);
-//        Bundle extras = row.getPrimaryBundleData();
-//        extras.putString("type", mType.toString());
-//        IntentUtils.startActivity(getActivity(), SalesDetail.class, extras);
-    }
-
-//    SaleOrder.OnOperationSuccessListener cancelOrder = new SaleOrder.OnOperationSuccessListener() {
-//        @Override
-//        public void OnSuccess() {
-//            Toast.makeText(getActivity(), mType + " cancelled", Toast.LENGTH_LONG).show();
-//        }
-//
-//        @Override
-//        public void OnCancelled() {
-//        }
-//    };
-//    SaleOrder.OnOperationSuccessListener confirmSale = new SaleOrder.OnOperationSuccessListener() {
-//        @Override
-//        public void OnSuccess() {
-//            Toast.makeText(getActivity(), "Quotation confirmed !", Toast.LENGTH_LONG).show();
-//        }
-//
-//        @Override
-//        public void OnCancelled() {
-//        }
-//    };
-//    SaleOrder.OnOperationSuccessListener newCopyQuotation = new SaleOrder.OnOperationSuccessListener() {
-//        @Override
-//        public void OnSuccess() {
-//            Toast.makeText(getActivity(), R.string.label_copy_quotation, Toast.LENGTH_LONG).show();
-//        }
-//
-//        @Override
-//        public void OnCancelled() {
-//        }
-//    };
 }
+

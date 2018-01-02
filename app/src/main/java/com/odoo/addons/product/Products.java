@@ -137,7 +137,7 @@ public class Products extends BaseFragment implements
         List<String> args = new ArrayList<>();
 
         if (!TextUtils.isEmpty(mCurFilter)) {
-            where = "(name like ?)";
+            where = "(name LIKE ?)";
             args.addAll(Arrays.asList("%" + mCurFilter + "%"));
         }
 
@@ -237,7 +237,7 @@ public class Products extends BaseFragment implements
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.menu_products, menu);
-        setHasSearchView(this, menu, R.id.menu_product_search);
+        setHasSearchView(this, menu, R.id.menu_products_search);
     }
 
     @Override

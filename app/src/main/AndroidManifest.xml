@@ -145,12 +145,12 @@
 
         <provider
             android:name=".addons.sale.providers.SaleOrderProvider"
-            android:authorities="${applicationId}.provider.content.sync.sale_order"
+            android:authorities="${applicationId}.core.provider.content.sync.sale_order"
             android:label="@string/sync_label_quotation_sales_orders"
             android:multiprocess="true" />
 
         <service
-            android:name=".addons.sale.services.SaleOrderSyncService"
+            android:name="com.odoo.addons.sale.services.SaleOrderSyncService"
             android:exported="true"
             android:process=":sync_sale_orders">
             <intent-filter>

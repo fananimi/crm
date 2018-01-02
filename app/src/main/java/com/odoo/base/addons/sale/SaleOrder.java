@@ -132,7 +132,7 @@ public class SaleOrder extends OModel {
         mStates.put("draft", "Quotation");
         mStates.put("sent", "Quotation Sent");
         mStates.put("sale", "Sales Order");
-        mStates.put("done", "Locked");
+        mStates.put("done", "Done");
         mStates.put("cancel", "Cancelled");
         return mStates.get(row.getString("state"));
     }

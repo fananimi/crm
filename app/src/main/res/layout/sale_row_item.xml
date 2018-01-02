@@ -24,7 +24,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/order_lines"
+            android:id="@+id/order_line_count"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="@color/body_text_3"
             android:fontFamily="@string/font_normal"
@@ -61,7 +61,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/state"
+            android:id="@+id/state_title"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="@color/theme_primary"
             android:fontFamily="@string/font_normal"
