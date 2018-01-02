@@ -19,10 +19,8 @@
  */
 package com.odoo.config;
 
-import com.odoo.addons.calendar.CalendarDashboard;
-import com.odoo.addons.crm.CRMLeads;
-import com.odoo.addons.customers.Customers;
-import com.odoo.addons.phonecall.PhoneCalls;
+import com.odoo.addons.contacts.Contact;
+import com.odoo.addons.products.Products;
 import com.odoo.addons.sale.Sales;
 import com.odoo.core.support.addons.AddonsHelper;
 import com.odoo.core.support.addons.OAddon;
@@ -37,9 +35,10 @@ public class Addons extends AddonsHelper {
      * for maintain sequence call withSequence(int sequence)
      * OAddon partners = new OAddon(Partners.class).withSequence(2);
      */
-    OAddon a_agenda = new OAddon(CalendarDashboard.class).setDefault();
-    OAddon b_partners = new OAddon(Customers.class);
-    OAddon c_crm_leads = new OAddon(CRMLeads.class);
-    OAddon e_sale = new OAddon(Sales.class);
-    OAddon f_phone_calls = new OAddon(PhoneCalls.class);
+//    OAddon a_agenda = new OAddon(CalendarDashboard.class).setDefault();
+    OAddon contact = new OAddon(Contact.class).withSequence(0).setDefault();
+    OAddon product = new OAddon(Products.class).withSequence(1);
+    OAddon sale = new OAddon(Sales.class).withSequence(2);
+//    OAddon c_crm_leads = new OAddon(CRMLeads.class);
+//    OAddon f_phone_calls = new OAddon(PhoneCalls.class);
 }
