@@ -29,34 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/txvType"
-                    android:layout_width="wrap_content"
-                    android:gravity="right"
-                    android:padding="@dimen/default_16dp"
-                    android:textAppearance="?android:textAppearanceLarge"
-                    android:layout_height="match_parent" />
-
-                <odoo.controls.OField
-                    android:layout_width="match_parent"
-                    android:id="@+id/fname"
-                    app:defaultFieldValue="/"
-                    app:fieldName="name"
-                    app:showLabel="false"
-                    app:showIcon="false"
-                    app:fieldTextAppearance="?android:textAppearanceLarge"
-                    app:fieldTextSize="@dimen/text_size_xmedium"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <View style="@style/ViewSeparator" />
-
             <odoo.controls.OField
+                android:id="@+id/partner_id"
                 android:layout_width="match_parent"
                 app:fieldName="partner_id"
                 app:showLabel="true"
@@ -90,23 +64,11 @@
 
             <View style="@style/ViewSeparator" />
 
-            <odoo.controls.OField
-                android:layout_width="match_parent"
-                app:fieldName="payment_term"
-                app:showLabel="true"
-                app:fieldTextSize="@dimen/text_size_xmedium"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:showIcon="false"
-                android:layout_height="wrap_content" />
-
-
-            <View style="@style/ViewSeparator" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:paddingLeft="@dimen/default_16dp"
                 android:paddingRight="@dimen/default_16dp"
-                android:id="@+id/layoutAddItem"
+                android:id="@+id/addItem"
                 android:paddingTop="@dimen/default_8dp"
                 android:paddingBottom="@dimen/default_8dp"
                 android:background="?android:attr/selectableItemBackground"
@@ -240,7 +202,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
-                    android:id="@+id/fTotal"
+                    android:id="@+id/total"
                     android:paddingBottom="@dimen/default_8dp"
                     android:paddingTop="@dimen/default_8dp"
                     android:layout_width="wrap_content"

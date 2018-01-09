@@ -5,6 +5,7 @@ import android.content.Context;
 import com.odoo.BuildConfig;
 import com.odoo.base.addons.product.Pricelist;
 import com.odoo.base.addons.product.ProductProduct;
+import com.odoo.base.addons.res.ResCompany;
 import com.odoo.base.addons.res.ResCurrency;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.base.addons.res.ResUsers;
@@ -47,7 +48,7 @@ public class SaleOrder extends OModel {
             .addSelection(STATE.draft.toString(), "Quotation")
             .addSelection(STATE.sent.toString(), "Quotation Sent")
             .addSelection(STATE.sale.toString(), "Sales Order")
-            .addSelection(STATE.done.toString(), "Locked")
+            .addSelection(STATE.done.toString(), "Done")
             .addSelection(STATE.cancel.toString(), "Cancelled")
             .setDefaultValue(STATE.draft.toString())
             .setRequired();
@@ -152,17 +153,14 @@ public class SaleOrder extends OModel {
         return symbol;
     }
 
-    public static String getDefaultCurrencySymbol(Context context, OUser currentUser){
-        int currency_id = currentUser.getCompanyId();
-        String selection = "(id) = ?";
-        String [] selectionArgs = {Integer.toString(currency_id)};
-        ResCurrency cr = new ResCurrency(context, null);
-        ODataRow row = cr.browse(null, selection, selectionArgs);
-        String symbol = "";
-        if (row != null){
-            symbol = row.getString("symbol");
-        }
-        return symbol;
+    public String getDefaultCurrencySymbol(){
+        Context ctx = getContext();
+        OUser user = OUser.current(ctx);
+        int currency_id = user.getCompanyId();
+        ResCompany resCompany = new ResCompany(ctx, null);
+        ODataRow company = resCompany.browse(currency_id);
+        ODataRow currency = company.getM2ORecord("currency_id").browse();
+        return currency.getString("symbol");
     }
 
 }

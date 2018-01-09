@@ -129,7 +129,7 @@ public class ContactDetails extends OdooCompatActivity implements
         if (record == null){
             mEditMode = true;
         }
-        setMode(mEditMode);
+        setMode();
     }
 
     private ODataRow getRecordInExtra() {
@@ -142,22 +142,22 @@ public class ContactDetails extends OdooCompatActivity implements
         return null;
     }
 
-    private void setMode(Boolean editMode) {
+    private void setMode() {
         // image manipulation
         setImage();
-        mCaptureImage.setVisibility(editMode? View.VISIBLE : View.GONE);
+        mCaptureImage.setVisibility(mEditMode? View.VISIBLE : View.GONE);
         mCaptureImage.setOnClickListener(this);
 
         // menu manipulation
         if (mMenu != null) {
-            mMenu.findItem(R.id.menu_contact_detail_more).setVisible(!editMode);
-            mMenu.findItem(R.id.menu_contact_edit).setVisible(!editMode);
-            mMenu.findItem(R.id.menu_contact_save).setVisible(editMode);
-            mMenu.findItem(R.id.menu_contact_cancel).setVisible(editMode);
+            mMenu.findItem(R.id.menu_contact_detail_more).setVisible(!mEditMode);
+            mMenu.findItem(R.id.menu_contact_edit).setVisible(!mEditMode);
+            mMenu.findItem(R.id.menu_contact_save).setVisible(mEditMode);
+            mMenu.findItem(R.id.menu_contact_cancel).setVisible(mEditMode);
         }
 
         // form manipulation
-        if (editMode) {
+        if (mEditMode) {
             nameField.setVisibility(View.VISIBLE);
             nameField.setOnValueChangeListener(this);
             findViewById(R.id.country_id).setVisibility(View.VISIBLE);
@@ -183,7 +183,7 @@ public class ContactDetails extends OdooCompatActivity implements
             collapsingToolbarLayout.setTitle(record.getString("name"));
         } else {
             color = Color.DKGRAY;
-            collapsingToolbarLayout.setTitle("New");
+            collapsingToolbarLayout.setTitle("New Contact");
         }
         mForm.setIconTintColor(color);
         mForm.initForm(record);
@@ -235,7 +235,7 @@ public class ContactDetails extends OdooCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_contact_detail, menu);
         mMenu = menu;
-        setMode(mEditMode);
+        setMode();
         return true;
     }
 
@@ -248,7 +248,7 @@ public class ContactDetails extends OdooCompatActivity implements
                 break;
             case R.id.menu_contact_edit:
                 mEditMode = !mEditMode;
-                setMode(mEditMode);
+                setMode();
                 break;
             case R.id.menu_contact_save:
                 final OValues values = mForm.getValues();
@@ -274,7 +274,7 @@ public class ContactDetails extends OdooCompatActivity implements
             case R.id.menu_contact_cancel:
                 mEditMode = !mEditMode;
                 if (record != null){
-                    setMode(mEditMode);
+                    setMode();
                 } else {
                     finish();
                 }

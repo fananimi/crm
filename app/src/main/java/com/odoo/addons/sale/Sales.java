@@ -26,6 +26,7 @@ import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
 import com.odoo.core.support.drawer.ODrawerItem;
 import com.odoo.core.support.list.OCursorListAdapter;
+import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OControls;
 import com.odoo.core.utils.OCursorUtils;
 import com.odoo.core.utils.OResource;
@@ -284,7 +285,8 @@ public class Sales extends BaseFragment implements
         if (row != null) {
             data = row.getPrimaryBundleData();
         }
-//        IntentUtils.startActivity(getActivity(), SaleDetail.class, data);
+        data.putString(EXTRA_KEY_TYPE, extras.getString(EXTRA_KEY_TYPE));
+        IntentUtils.startActivity(getActivity(), SaleDetail.class, data);
     }
 
 }
