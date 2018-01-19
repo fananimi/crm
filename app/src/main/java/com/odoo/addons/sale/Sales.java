@@ -160,7 +160,7 @@ public class Sales extends BaseFragment implements
 
         String selection = (args.size() > 0) ? where : null;
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
-        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "name");
+        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "date_order DESC");
     }
 
     @Override
